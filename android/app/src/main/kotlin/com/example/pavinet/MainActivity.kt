@@ -1,4 +1,4 @@
-package com.example.pavinet_mobile_application
+package com.example.pavinet
 
 import io.flutter.embedding.android.FlutterActivity
 

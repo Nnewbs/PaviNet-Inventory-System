@@ -1,6 +1,6 @@
 {
-    "name": "pavinet_mobile_application",
-    "short_name": "pavinet_mobile_application",
+    "name": "pavinet",
+    "short_name": "pavinet",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
