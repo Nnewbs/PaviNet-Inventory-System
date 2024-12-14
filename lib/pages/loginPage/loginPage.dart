@@ -12,6 +12,9 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext content) {
     return Scaffold(
@@ -23,12 +26,34 @@ class _LogInPageState extends State<LogInPage> {
               style: CustomeTextStyle.SignUpLogin, textAlign: TextAlign.center),
           const Text('Please sign in to continue.',
               style: CustomeTextStyle.txtGrey),
-          const SizedBox(height: 30),
-          const Text(
-            'textfields...',
-            style: CustomeTextStyle.txtGrey,
+          const SizedBox(height: 40),
+        
+          // USERNAME TextField
+          SizedBox(
+            width: 300, // Set a specific width for the TextField
+            child: TextField(
+              controller: usernameController,
+              decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
+                hintText: 'USERNAME',
+              ),
+            ),
           ),
-          const SizedBox(height: 60),
+          const SizedBox(height: 15),
+
+          // PASSWORD TextField
+          SizedBox(
+            width: 300, // Set the same width to maintain consistency
+            child: TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
+                hintText: 'PASSWORD',
+              ),
+            ),
+          ),
+
+
+          const SizedBox(height: 30),
           TextButton(
             onPressed: () {
               Navigator.push(context,
