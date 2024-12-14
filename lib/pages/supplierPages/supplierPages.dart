@@ -29,6 +29,8 @@ class _SupplierPagesState extends State<SupplierPages> {
   @override
   Widget build(BuildContext content) {
     return Scaffold(
+      // theme: ThemeData(scaffoldBackgroundColor: const Color(0xFF000000)),
+      backgroundColor: Colors.blueGrey.shade200,
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pavinet/customStyles/customStyles.dart';
 import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierChat.dart';
 import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierHistory.dart';
 import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierMain.dart';
@@ -18,42 +19,37 @@ class _SupplierDashboardState extends State<SupplierDashboard> {
       home: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text('Dashboard'),
+            title: Text(
+              'Dashboard',
+              style: CustomeTextStyle.txtWhiteBold,
+            ),
+            backgroundColor: Colors.black,
           ),
           body: DefaultTabController(
               length: 3,
               child: Column(
                 children: [
-                  Container(
-                    child: TabBar(
-                        labelColor: Colors.brown,
-                        unselectedLabelColor: Colors.black,
-                        indicatorColor: Colors.brown,
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Arial',
-                          fontSize: 20.0,
-                        ),
-                        tabs: [
-                          Tab(text: 'Main'),
-                          Tab(text: 'Chat'),
-                          Tab(text: 'History')
-                        ]),
-                  ),
+                  TabBar(
+                      labelColor: Colors.brown,
+                      unselectedLabelColor: Colors.black,
+                      indicatorColor: Colors.brown,
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Arial',
+                        fontSize: 20.0,
+                      ),
+                      tabs: [
+                        Tab(text: 'Main'),
+                        Tab(text: 'Chat'),
+                        Tab(text: 'History')
+                      ]),
                   Expanded(
-                      child: Container(
                     child: TabBarView(children: [
-                      Container(
-                        child: SupplierMain(),
-                      ),
-                      Container(
-                        child: SupplierChat(),
-                      ),
-                      Container(
-                        child: SupplierHistory(),
-                      )
+                      SupplierMain(),
+                      SupplierChat(),
+                      SupplierHistory(),
                     ]),
-                  ))
+                  )
                 ],
               ))),
     );
