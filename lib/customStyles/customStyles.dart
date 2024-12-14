@@ -21,3 +21,19 @@ class CustomButtonStyle {
       textStyle: const TextStyle(fontSize: 12, color: Colors.orange),
       backgroundColor: Colors.transparent);
 }
+
+class CustomTextFieldStyle {
+  static const Color fillColor = Color(0xFFEEEEEE); // Light grey background
+  static const Color hintTextColor = Color(0xFF9E9E9E); // Darker grey placeholder text
+
+  static const InputDecoration textFieldDecoration = InputDecoration(
+    filled: true,
+    fillColor: fillColor,
+    hintStyle: TextStyle(color: hintTextColor),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+      borderSide: BorderSide.none,
+    ),
+    contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+  );
+}

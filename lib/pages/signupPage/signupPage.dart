@@ -10,6 +10,12 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+
   @override
   Widget build(BuildContext content) {
     return Scaffold(
@@ -21,10 +27,55 @@ class _SignUpPageState extends State<SignUpPage> {
               style: CustomeTextStyle.SignUpLogin, textAlign: TextAlign.center),
           const Text('Create an account.', style: CustomeTextStyle.txtGrey),
           const SizedBox(height: 30),
-          const Text(
-            'textfields...',
-            style: CustomeTextStyle.txtGrey,
+
+          // Name TextField 
+          TextField(
+            controller: nameController,
+            decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
+              hintText: 'NAME', 
+            ),
           ),
+          const SizedBox(height: 15),
+
+          // Username TextField
+          TextField(
+            controller: usernameController,
+            decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
+              hintText: 'USERNAME', 
+            ),
+          ),
+          const SizedBox(height: 15),
+
+          // Phone Number TextField
+          TextField(
+            controller: phoneController,
+            keyboardType: TextInputType.phone,
+            decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
+              hintText: 'PHONE NUMBER',
+            ),
+          ),
+          const SizedBox(height: 15),
+
+          // Password TextField
+          TextField(
+            controller: passwordController,
+            obscureText: true,
+            decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
+              hintText: 'PASSWORD',
+            ),
+          ),
+          const SizedBox(height: 15),
+
+          // Confirm Password TextField
+          TextField(
+            controller: confirmPasswordController,
+            obscureText: true,
+            decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
+              hintText: 'CONFIRM PASSWORD',
+            ),
+          ),
+          const SizedBox(height: 60),
+
           const SizedBox(height: 60),
           ElevatedButton(
               style: CustomButtonStyle.button1,
