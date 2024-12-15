@@ -14,16 +14,16 @@ class _SupplierHistoryState extends State<SupplierHistory> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(0, 0, 0, 1),
       body: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             children: <Widget>[
               // order history container
               Container(
-                  // height: 390,
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius: BorderRadius.circular(20)),
                   child: Column(children: [
                     Container(
@@ -45,14 +45,14 @@ class _SupplierHistoryState extends State<SupplierHistory> {
                               dataRowMaxHeight: double.infinity,
                               columns: [
                                 DataColumn(label: Text('Date')),
-                                DataColumn(label: Text('Name')),
+                                DataColumn(label: Text('Item Name')),
                                 DataColumn(label: Text('Quantity')),
                                 DataColumn(label: Text('Status'))
                               ],
                               rows: [
                                 DataRow(cells: [
                                   DataCell(Text('21/10/24')),
-                                  DataCell(Text('Moist Cake')),
+                                  DataCell(Text('Choco Moist Cake')),
                                   DataCell(Text('3')),
                                   DataCell(Container(
                                     padding: EdgeInsets.all(5),
@@ -98,60 +98,150 @@ class _SupplierHistoryState extends State<SupplierHistory> {
                                     ),
                                   ))
                                 ]),
-                                // DataRow(cells: [
-                                //   DataCell(Text('21/10/24')),
-                                //   DataCell(Text('Moist Cake')),
-                                //   DataCell(Text('3')),
-                                //   DataCell(Text('Approved')),
-                                // ]),
-                                // DataRow(cells: [
-                                //   DataCell(Text('25/10/24')),
-                                //   DataCell(Text('Tart')),
-                                //   DataCell(Text('5')),
-                                //   DataCell(Text('Pending'))
-                                // ]),
-                                // DataRow(cells: [
-                                //   DataCell(Text('26/10/24')),
-                                //   DataCell(Text('Choco Jar')),
-                                //   DataCell(Text('6')),
-                                //   DataCell(Text('Rejected'))
-                                // ]),
-                                // DataRow(cells: [
-                                //   DataCell(Text('21/10/24')),
-                                //   DataCell(Text('Moist Cake')),
-                                //   DataCell(Text('3')),
-                                //   DataCell(Text('Approved')),
-                                // ]),
-                                // DataRow(cells: [
-                                //   DataCell(Text('25/10/24')),
-                                //   DataCell(Text('Tart')),
-                                //   DataCell(Text('5')),
-                                //   DataCell(Text('Pending'))
-                                // ]),
-                                // DataRow(cells: [
-                                //   DataCell(Text('26/10/24')),
-                                //   DataCell(Text('Choco Jar')),
-                                //   DataCell(Text('6')),
-                                //   DataCell(Text('Rejected'))
-                                // ]),
-                                // DataRow(cells: [
-                                //   DataCell(Text('21/10/24')),
-                                //   DataCell(Text('Moist Cake')),
-                                //   DataCell(Text('3')),
-                                //   DataCell(Text('Approved')),
-                                // ]),
-                                // DataRow(cells: [
-                                //   DataCell(Text('25/10/24')),
-                                //   DataCell(Text('Tart')),
-                                //   DataCell(Text('5')),
-                                //   DataCell(Text('Pending'))
-                                // ]),
-                                // DataRow(cells: [
-                                //   DataCell(Text('26/10/24')),
-                                //   DataCell(Text('Choco Jar')),
-                                //   DataCell(Text('6')),
-                                //   DataCell(Text('Rejected'))
-                                // ]),
+                                DataRow(cells: [
+                                  DataCell(Text('21/10/24')),
+                                  DataCell(Text('Choco Moist Cake')),
+                                  DataCell(Text('3')),
+                                  DataCell(Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Text(
+                                      'Approved',
+                                      style: CustomeTextStyle.txtWhiteBold,
+                                    ),
+                                  )),
+                                ]),
+                                DataRow(cells: [
+                                  DataCell(Text('25/10/24')),
+                                  DataCell(Text('Tart')),
+                                  DataCell(Text('5')),
+                                  DataCell(Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.yellowAccent[700],
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Text(
+                                      'Pending',
+                                      style: CustomeTextStyle.txtWhiteBold,
+                                    ),
+                                  ))
+                                ]),
+                                DataRow(cells: [
+                                  DataCell(Text('26/10/24')),
+                                  DataCell(Text('Choco Jar')),
+                                  DataCell(Text('6')),
+                                  DataCell(Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Text(
+                                      'Rejected',
+                                      style: CustomeTextStyle.txtWhiteBold,
+                                    ),
+                                  ))
+                                ]),
+                                DataRow(cells: [
+                                  DataCell(Text('21/10/24')),
+                                  DataCell(Text('Choco Moist Cake')),
+                                  DataCell(Text('3')),
+                                  DataCell(Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Text(
+                                      'Approved',
+                                      style: CustomeTextStyle.txtWhiteBold,
+                                    ),
+                                  )),
+                                ]),
+                                DataRow(cells: [
+                                  DataCell(Text('25/10/24')),
+                                  DataCell(Text('Tart')),
+                                  DataCell(Text('5')),
+                                  DataCell(Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.yellowAccent[700],
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Text(
+                                      'Pending',
+                                      style: CustomeTextStyle.txtWhiteBold,
+                                    ),
+                                  ))
+                                ]),
+                                DataRow(cells: [
+                                  DataCell(Text('26/10/24')),
+                                  DataCell(Text('Choco Jar')),
+                                  DataCell(Text('6')),
+                                  DataCell(Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Text(
+                                      'Rejected',
+                                      style: CustomeTextStyle.txtWhiteBold,
+                                    ),
+                                  ))
+                                ]),
+                                DataRow(cells: [
+                                  DataCell(Text('21/10/24')),
+                                  DataCell(Text('Choco Moist Cake')),
+                                  DataCell(Text('3')),
+                                  DataCell(Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Text(
+                                      'Approved',
+                                      style: CustomeTextStyle.txtWhiteBold,
+                                    ),
+                                  )),
+                                ]),
+                                DataRow(cells: [
+                                  DataCell(Text('25/10/24')),
+                                  DataCell(Text('Tart')),
+                                  DataCell(Text('5')),
+                                  DataCell(Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.yellowAccent[700],
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Text(
+                                      'Pending',
+                                      style: CustomeTextStyle.txtWhiteBold,
+                                    ),
+                                  ))
+                                ]),
+                                DataRow(cells: [
+                                  DataCell(Text('26/10/24')),
+                                  DataCell(Text('Choco Jar')),
+                                  DataCell(Text('6')),
+                                  DataCell(Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Text(
+                                      'Rejected',
+                                      style: CustomeTextStyle.txtWhiteBold,
+                                    ),
+                                  ))
+                                ]),
                               ])),
                     )
                   ]))

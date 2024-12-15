@@ -1,37 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:pavinet/customstyles/customStyles.dart';
 
-class SupplierChat extends StatefulWidget {
-  const SupplierChat({super.key});
+class AdminMessages extends StatefulWidget {
+  const AdminMessages({super.key});
 
   @override
-  State<SupplierChat> createState() => _SupplierChatState();
+  State<AdminMessages> createState() => _AdminMessagesState();
 }
 
-class _SupplierChatState extends State<SupplierChat> {
+class _AdminMessagesState extends State<AdminMessages> {
   @override
   Widget build(BuildContext content) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Padding(
-          padding: const EdgeInsets.all(10),
+        backgroundColor: Colors.black,
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 // text box container
                 Container(
-                  padding: EdgeInsets.all(10),
-                  child: Container(
-                      padding: EdgeInsets.all(10),
-                      height: 160,
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          border: Border.all(width: 2, color: Colors.white),
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextField(
+                  margin: EdgeInsets.fromLTRB(30, 0, 30, 40),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
+                        height: 150,
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            border: Border.all(width: 2, color: Colors.white),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Scrollbar(
+                          child: TextField(
                             decoration: InputDecoration(
                               border: InputBorder.none,
                             ),
@@ -41,42 +42,43 @@ class _SupplierChatState extends State<SupplierChat> {
                             maxLines:
                                 5, // when user presses enter it will adapt to it
                           ),
-                        ],
-                      )),
+                        ),
+                      ),
+                      // send button
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: ElevatedButton(
+                            style: CustomButtonStyle.bgButton,
+                            onPressed: () {
+                              print("SEND MESSAGE");
+                            },
+                            child: const Text(
+                              'SEND',
+                              style: CustomeTextStyle.txtWhiteBold,
+                            )),
+                      )
+                    ],
+                  ),
                 ),
+                // chat container
                 Container(
-                  padding: EdgeInsets.fromLTRB(0, 0, 10, 35),
-                  alignment: Alignment.topRight,
-                  child: ElevatedButton(
-                      style: CustomButtonStyle.bgButton,
-                      onPressed: () {
-                        print("SEND MESSAGE");
-                      },
-                      child: const Text(
-                        'SEND',
-                        style: CustomeTextStyle.txtWhiteBold,
-                      )),
-                ),
-                // messages container
-                Container(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Colors.grey[50],
                         borderRadius: BorderRadius.circular(20)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                          child: const Text(
-                            'Chat',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ),
                         DataTable(dataRowMaxHeight: double.infinity, columns: [
-                          DataColumn(label: Text('Date')),
-                          DataColumn(label: Text('Messages'))
+                          DataColumn(
+                            label: Text(
+                              'Chats',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          DataColumn(label: Text(''))
                         ], rows: [
                           DataRow(cells: [
                             DataCell(Text('21/10/24')),
@@ -97,13 +99,7 @@ class _SupplierChatState extends State<SupplierChat> {
                     ))
               ],
             ),
-          )),
-    );
+          ),
+        ));
   }
-}
-
-class ChartData {
-  ChartData(this.x, this.y);
-  final String x;
-  final int y;
 }
