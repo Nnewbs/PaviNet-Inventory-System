@@ -27,7 +27,7 @@ class _LogInPageState extends State<LogInPage> {
           const Text('Please sign in to continue.',
               style: CustomeTextStyle.txtGrey),
           const SizedBox(height: 40),
-        
+
           // USERNAME TextField
           SizedBox(
             width: 300, // Set a specific width for the TextField
@@ -52,7 +52,6 @@ class _LogInPageState extends State<LogInPage> {
             ),
           ),
 
-
           const SizedBox(height: 30),
           TextButton(
             onPressed: () {
@@ -71,7 +70,7 @@ class _LogInPageState extends State<LogInPage> {
                 style: CustomeTextStyle.accentBold),
           ),
           ElevatedButton(
-              style: CustomButtonStyle.button1,
+              style: CustomButtonStyle.bgButton,
               onPressed: () {
                 print("TO DASHBOARD FROM LOGIN");
               },

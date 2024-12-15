@@ -15,43 +15,53 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext content) {
     return Scaffold(
         body: Center(
-            child: IntrinsicWidth(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-          const Text('PAVI NET',
-              style: CustomeTextStyle.nameOfAppStyle,
-              textAlign: TextAlign.center),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+          const Text(
+            'PAVI NET',
+            style: CustomeTextStyle.nameOfAppStyle,
+          ),
           const SizedBox(height: 15),
-          const Text('Effortless Inventory Management.',
-              style: CustomeTextStyle.txtGrey, textAlign: TextAlign.center),
-          const Text('Anytime.',
-              style: CustomeTextStyle.txtGrey, textAlign: TextAlign.center),
+          const Text(
+            'Effortless Inventory Management.',
+            style: TextStyle(color: Colors.grey),
+          ),
+          const Text(
+            'Anytime.',
+            style: TextStyle(color: Colors.grey),
+          ),
           const Text('Anywhere.',
-              style: CustomeTextStyle.txtGrey, textAlign: TextAlign.center),
+              style: TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center),
           const SizedBox(height: 60),
-          ElevatedButton(
-              style: CustomButtonStyle.button1,
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SignUpPage()));
-              },
-              child: const Text(
-                'SIGN UP',
-                style: CustomeTextStyle.txtWhiteBold,
-              )),
-          const SizedBox(height: 30),
-          ElevatedButton(
-              style: CustomButtonStyle.button1,
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LogInPage()));
-              },
-              child: const Text(
-                'LOG IN',
-                style: CustomeTextStyle.txtWhiteBold,
-              )),
-        ]))));
+          IntrinsicWidth(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ElevatedButton(
+                  style: CustomButtonStyle.bgButton,
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SignUpPage()));
+                  },
+                  child: const Text(
+                    'SIGN UP',
+                    style: CustomeTextStyle.txtWhiteBold,
+                  )),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                  style: CustomButtonStyle.bgButton,
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LogInPage()));
+                  },
+                  child: const Text(
+                    'LOG IN',
+                    style: CustomeTextStyle.txtWhiteBold,
+                  )),
+            ],
+          ))
+        ])));
   }
 }

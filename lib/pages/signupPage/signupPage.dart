@@ -86,7 +86,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
           const SizedBox(height: 20),
           ElevatedButton(
-              style: CustomButtonStyle.button1,
+              style: CustomButtonStyle.bgButton,
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LogInPage()));

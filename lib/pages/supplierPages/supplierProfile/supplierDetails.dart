@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pavinet/customStyles/customStyles.dart';
 
 class SupplierDetails extends StatefulWidget {
   const SupplierDetails({super.key});
@@ -15,7 +16,9 @@ class _SupplierDetailsState extends State<SupplierDetails> {
         home: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text('Supplier Details'),
+            title:
+                Text('Supplier Details', style: CustomeTextStyle.txtWhiteBold),
+            backgroundColor: Colors.black,
           ),
           body: Center(
             child: Column(

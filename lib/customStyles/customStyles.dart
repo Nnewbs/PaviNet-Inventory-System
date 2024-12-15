@@ -15,16 +15,17 @@ class CustomeTextStyle {
 }
 
 class CustomButtonStyle {
-  static ButtonStyle button1 = ElevatedButton.styleFrom(
+  static ButtonStyle bgButton = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20), backgroundColor: Colors.orange);
-  static ButtonStyle button2 = ElevatedButton.styleFrom(
+  static ButtonStyle txtButton = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 12, color: Colors.orange),
       backgroundColor: Colors.transparent);
 }
 
 class CustomTextFieldStyle {
   static const Color fillColor = Color(0xFFEEEEEE); // Light grey background
-  static const Color hintTextColor = Color(0xFF9E9E9E); // Darker grey placeholder text
+  static const Color hintTextColor =
+      Color(0xFF9E9E9E); // Darker grey placeholder text
 
   static const InputDecoration textFieldDecoration = InputDecoration(
     filled: true,
