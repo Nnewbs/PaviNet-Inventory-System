@@ -28,7 +28,6 @@ class _LogInPageState extends State<LogInPage> {
               style: CustomeTextStyle.txtGrey),
           const SizedBox(height: 40),
 
->>>>>>> 5df65eb7af28424ed8af710166a558f183bdeb64
           // USERNAME TextField
           SizedBox(
             width: 300, // Set a specific width for the TextField
@@ -53,8 +52,6 @@ class _LogInPageState extends State<LogInPage> {
             ),
           ),
 
-
->>>>>>> 5df65eb7af28424ed8af710166a558f183bdeb64
           const SizedBox(height: 30),
           TextButton(
             onPressed: () {

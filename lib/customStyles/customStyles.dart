@@ -26,7 +26,6 @@ class CustomTextFieldStyle {
   static const Color fillColor = Color(0xFFEEEEEE); // Light grey background
   static const Color hintTextColor =
       Color(0xFF9E9E9E); // Darker grey placeholder text
->>>>>>> 5df65eb7af28424ed8af710166a558f183bdeb64
 
   static const InputDecoration textFieldDecoration = InputDecoration(
     filled: true,
@@ -39,4 +38,3 @@ class CustomTextFieldStyle {
     contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
   );
 }
->>>>>>> 5df65eb7af28424ed8af710166a558f183bdeb64
