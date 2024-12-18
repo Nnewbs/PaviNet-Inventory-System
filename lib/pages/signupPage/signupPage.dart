@@ -20,91 +20,111 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext content) {
     return Scaffold(
-        body: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-          const Text('SIGN UP',
-              style: CustomeTextStyle.SignUpLogin, textAlign: TextAlign.center),
-          const Text('Create an account.', style: CustomeTextStyle.txtGrey),
-          const SizedBox(height: 35),
+        body: Padding(
+      padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+      child: SingleChildScrollView(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+            const Text('SIGN UP',
+                style: CustomeTextStyle.SignUpLogin,
+                textAlign: TextAlign.center),
+            const Text('Create an account.', style: CustomeTextStyle.txtGrey),
+            const SizedBox(height: 35),
 
-          // Restricting width of text fields
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 350),
-            child: Column(
-              children: [
-                // Name TextField
-                TextField(
-                  controller: nameController,
-                  decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
-                    hintText: 'NAME',
+            // Restricting width of text fields
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 350),
+              child: Column(
+                children: [
+                  // Name TextField
+                  TextField(
+                    controller: nameController,
+                    decoration:
+                        CustomTextFieldStyle.textFieldDecoration.copyWith(
+                      hintText: 'NAME',
+                    ),
                   ),
-                ),
-                const SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
-                // Username TextField
-                TextField(
-                  controller: usernameController,
-                  decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
-                    hintText: 'USERNAME',
+                  // Username TextField
+                  SizedBox(
+                    width: 300,
+                    child: TextField(
+                      controller: usernameController,
+                      decoration:
+                          CustomTextFieldStyle.textFieldDecoration.copyWith(
+                        hintText: 'USERNAME',
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
-                // Phone Number TextField
-                TextField(
-                  controller: phoneController,
-                  keyboardType: TextInputType.phone,
-                  decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
-                    hintText: 'PHONE NUMBER',
+                  // Phone Number TextField
+                  SizedBox(
+                    width: 300,
+                    child: TextField(
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration:
+                          CustomTextFieldStyle.textFieldDecoration.copyWith(
+                        hintText: 'PHONE NUMBER',
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
-                // Password TextField
-                TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
-                    hintText: 'PASSWORD',
-                  ),
-                ),
-                const SizedBox(height: 15),
+                  // Password TextField
+                  SizedBox(
+                      width: 300,
+                      child: TextField(
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration:
+                            CustomTextFieldStyle.textFieldDecoration.copyWith(
+                          hintText: 'PASSWORD',
+                        ),
+                      )),
+                  const SizedBox(height: 15),
 
-                // Confirm Password TextField
-                TextField(
-                  controller: confirmPasswordController,
-                  obscureText: true,
-                  decoration: CustomTextFieldStyle.textFieldDecoration.copyWith(
-                    hintText: 'CONFIRM PASSWORD',
-                  ),
-                ),
-              ],
+                  // Confirm Password TextField
+                  SizedBox(
+                    width: 300,
+                    child: TextField(
+                      controller: confirmPasswordController,
+                      obscureText: true,
+                      decoration:
+                          CustomTextFieldStyle.textFieldDecoration.copyWith(
+                        hintText: 'CONFIRM PASSWORD',
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
 
-          const SizedBox(height: 20),
-          ElevatedButton(
-              style: CustomButtonStyle.bgButton,
+            const SizedBox(height: 20),
+            ElevatedButton(
+                style: CustomButtonStyle.bgButton,
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LogInPage()));
+                },
+                child: const Text(
+                  'SIGN UP',
+                  style: CustomeTextStyle.txtWhiteBold,
+                )),
+            const SizedBox(height: 20),
+            const Text('Already have account?',
+                style: (CustomeTextStyle.txtWhiteBold)),
+            TextButton(
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LogInPage()));
               },
-              child: const Text(
-                'SIGN UP',
-                style: CustomeTextStyle.txtWhiteBold,
-              )),
-          const SizedBox(height: 20),
-          const Text('Already have account?',
-              style: (CustomeTextStyle.txtWhiteBold)),
-          TextButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LogInPage()));
-            },
-            child: const Text('Log in', style: CustomeTextStyle.accentBold),
-          ),
-        ])));
+              child: const Text('Log in', style: CustomeTextStyle.accentBold),
+            ),
+          ])),
+    ));
   }
 }
