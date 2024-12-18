@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pavinet/pages/adminPages/adminAccount/accountReview.dart';
 import 'package:pavinet/pages/adminPages/adminCategory/categoryPage.dart';
 import 'package:pavinet/pages/adminPages/adminDashboard/adminHome.dart';
-import 'package:pavinet/pages/adminPages/orderReview/orderReview.dart';
+import 'package:pavinet/pages/adminPages/adminOrder/orderReview.dart';
 import 'package:pavinet/pages/adminPages/productDetails/productDetails.dart';
 
 class AdminPages extends StatefulWidget {

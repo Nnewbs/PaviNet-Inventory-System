@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierDashboard.dart';
 import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierMessages.dart';
-import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierHistory.dart';
-
+// import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierHistory.dart';
 
 class SupplierHome extends StatefulWidget {
   const SupplierHome({super.key});
@@ -28,7 +27,7 @@ class _SupplierHomeState extends State<SupplierHome> {
           backgroundColor: Colors.black,
         ),
         body: DefaultTabController(
-            length: 3,
+            length: 2,
             child: Column(
               children: [
                 Container(
@@ -49,7 +48,7 @@ class _SupplierHomeState extends State<SupplierHome> {
                       tabs: [
                         Tab(text: 'Dashboard'),
                         Tab(text: 'Messages'),
-                        Tab(text: 'History'),
+                        // Tab(text: 'History'),
                       ]),
 
                   // ),
@@ -58,7 +57,6 @@ class _SupplierHomeState extends State<SupplierHome> {
                   child: TabBarView(children: [
                     SupplierDashboard(),
                     SupplierMessages(),
-                    SupplierHistory(),
                   ]),
                 )
               ],
