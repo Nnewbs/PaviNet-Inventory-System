@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pavinet/customStyles/customStyles.dart';
 
 class OrderReview extends StatefulWidget {
   const OrderReview({super.key});
@@ -8,7 +9,6 @@ class OrderReview extends StatefulWidget {
 }
 
 class _OrderReviewState extends State<OrderReview> {
-  // Original order list
   final List<OrderItem> _allOrders = [
     OrderItem(
         supplier: 'Lina',
@@ -37,13 +37,8 @@ class _OrderReviewState extends State<OrderReview> {
         status: 'Rejected'),
   ];
 
-  // Filtered list for display
   List<OrderItem> _filteredOrders = [];
-
-  // Checkbox states for all orders
   late List<bool> _checked;
-
-  // Search controller
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -62,20 +57,22 @@ class _OrderReviewState extends State<OrderReview> {
             order.itemName.toLowerCase().contains(query) ||
             order.status.toLowerCase().contains(query);
       }).toList();
+      _checked = List.generate(_filteredOrders.length, (index) => false);
     });
-    // Resize the checkbox state list when filtered
-    _checked = List.generate(_filteredOrders.length, (index) => false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 600;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Order Review'),
+          title: Text('Order Review', style: CustomeTextStyle.txtWhiteBold),
           centerTitle: true,
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: Colors.black,
         ),
         body: Column(
           children: [
@@ -85,7 +82,7 @@ class _OrderReviewState extends State<OrderReview> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: 'Supplier / Item Name / Status',
+                  hintText: 'Search (Supplier, Item Name, Status)',
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -94,44 +91,13 @@ class _OrderReviewState extends State<OrderReview> {
               ),
             ),
 
-            // Order Request Header
+            // Order List Header
             Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: const Text(
-                'Order Request',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
-            // Table Header
-            Container(
-              color: Colors.grey.shade200,
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(width: 24), // Checkbox spacing
-                  Expanded(
-                      flex: 1,
-                      child: Text('Supplier',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  Expanded(
-                      flex: 1,
-                      child: Text('Item Name',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  Expanded(
-                      flex: 1,
-                      child: Text('Quantity',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  Expanded(
-                      flex: 1,
-                      child: Text('Status',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                ],
+                'Order Requests',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
 
@@ -142,32 +108,56 @@ class _OrderReviewState extends State<OrderReview> {
                 itemBuilder: (context, index) {
                   final order = _filteredOrders[index];
                   return Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey.shade300),
-                      ),
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Checkbox(
-                          value: _checked[index],
-                          onChanged: (bool? value) {
-                            setState(() {
-                              _checked[index] = value ?? false;
-                            });
-                          },
-                        ),
-                        Expanded(flex: 1, child: Text(order.supplier)),
-                        Expanded(flex: 1, child: Text(order.itemName)),
-                        Expanded(flex: 1, child: Text(order.quantity)),
-                        Expanded(
-                            flex: 1,
-                            child: StatusIndicator(status: order.status)),
-                      ],
-                    ),
+                    child: isSmallScreen
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CheckboxListTile(
+                                value: _checked[index],
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    _checked[index] = value ?? false;
+                                  });
+                                },
+                                title: Text(order.supplier),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Item: ${order.itemName}'),
+                                    Text('Quantity: ${order.quantity}'),
+                                    StatusIndicator(status: order.status),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Checkbox(
+                                value: _checked[index],
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    _checked[index] = value ?? false;
+                                  });
+                                },
+                              ),
+                              Expanded(flex: 1, child: Text(order.supplier)),
+                              Expanded(flex: 1, child: Text(order.itemName)),
+                              Expanded(flex: 1, child: Text(order.quantity)),
+                              Expanded(
+                                  flex: 1,
+                                  child: StatusIndicator(status: order.status)),
+                            ],
+                          ),
                   );
                 },
               ),
@@ -179,7 +169,6 @@ class _OrderReviewState extends State<OrderReview> {
   }
 }
 
-// Data model for Order Item
 class OrderItem {
   final String supplier;
   final String itemName;
@@ -194,7 +183,6 @@ class OrderItem {
   });
 }
 
-// Widget for Status Indicator
 class StatusIndicator extends StatelessWidget {
   final String status;
 
@@ -230,10 +218,7 @@ class StatusIndicator extends StatelessWidget {
         ),
         Text(
           status,
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            color: statusColor,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w500, color: statusColor),
         ),
       ],
     );
