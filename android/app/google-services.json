@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "954901246022",
+    "project_id": "pavinet-inventory",
+    "storage_bucket": "pavinet-inventory.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:954901246022:android:a946c5ef4e9dc2e51f9a47",
+        "android_client_info": {
+          "package_name": "com.example.pavinet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_CrFFpWpNZhR6bGyii5g5lrJpwIIlya8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

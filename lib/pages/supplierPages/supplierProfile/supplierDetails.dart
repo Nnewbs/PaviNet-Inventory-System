@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
+import 'package:pavinet/Service/auth_service.dart';
+import 'package:pavinet/pages/loginPage/loginPage.dart';
+
+final AuthService _authService = AuthService(); // Initialize AuthService
 
 class SupplierDetails extends StatefulWidget {
   const SupplierDetails({super.key});
@@ -39,6 +43,19 @@ class _SupplierDetailsState extends State<SupplierDetails> {
     }
   }
 
+  void _signOut() async {
+    await _authService.signOut(); // Call the sign-out method
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Signed out successfully!')),
+    );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LogInPage(), // Navigate to LoginScreen
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -48,6 +65,16 @@ class _SupplierDetailsState extends State<SupplierDetails> {
           centerTitle: true,
           title: Text('Supplier Details', style: CustomeTextStyle.txtWhiteBold),
           backgroundColor: Colors.black,
+          actions: [
+            IconButton(
+              onPressed: _signOut, // Call _signOut on button press
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white, // Make the icon white
+              ),
+              tooltip: 'Sign Out',
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
