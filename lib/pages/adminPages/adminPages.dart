@@ -3,7 +3,7 @@ import 'package:pavinet/pages/adminPages/adminAccount/accountReview.dart';
 import 'package:pavinet/pages/adminPages/adminCategory/categoryPage.dart';
 import 'package:pavinet/pages/adminPages/adminDashboard/adminHome.dart';
 import 'package:pavinet/pages/adminPages/adminOrder/orderReview.dart';
-import 'package:pavinet/pages/adminPages/productDetails/productDetails.dart';
+import 'package:pavinet/pages/adminPages/adminProducts/productDetails.dart';
 import 'package:pavinet/pages/adminPages/adminDashboard/adminProfile.dart';
 
 class AdminPages extends StatefulWidget {
