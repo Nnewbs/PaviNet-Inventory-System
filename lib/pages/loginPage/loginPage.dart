@@ -93,7 +93,6 @@ class LogInPageState extends State<LogInPage> {
                   child: TextField(
                     controller: passwordController,
                     obscureText: isPasswordHidden,
-                    keyboardType: TextInputType.none, // Disable keyboard popup
                     decoration:
                         CustomTextFieldStyle.textFieldDecoration.copyWith(
                       hintText: 'PASSWORD',
