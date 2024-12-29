@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class SupplierDashboard extends StatefulWidget {
-  const SupplierDashboard({super.key});
+class StaffDashboard extends StatefulWidget {
+  const StaffDashboard({super.key});
 
   @override
-  State<SupplierDashboard> createState() => _SupplierDashboardState();
+  State<StaffDashboard> createState() => _StaffDashboardState();
 }
 
-class _SupplierDashboardState extends State<SupplierDashboard> {
+class _StaffDashboardState extends State<StaffDashboard> {
   @override
   Widget build(BuildContext content) {
     // static data sample

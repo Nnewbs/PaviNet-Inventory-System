@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  dropdown_button2: ^2.3.8
   syncfusion_flutter_charts: ^28.1.33
   flutter:
     sdk: flutter

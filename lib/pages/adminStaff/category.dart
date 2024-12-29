@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 
-class CategoryPage extends StatefulWidget {
-  const CategoryPage({super.key});
+class Category extends StatefulWidget {
+  const Category({super.key});
 
   @override
-  State<CategoryPage> createState() => _CategoryPageState();
+  State<Category> createState() => _CategoryState();
 }
 
-class _CategoryPageState extends State<CategoryPage> {
+class _CategoryState extends State<Category> {
   // List of categories
   final List<String> categories = [
     "All Category",

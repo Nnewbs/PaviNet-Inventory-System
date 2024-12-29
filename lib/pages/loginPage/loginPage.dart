@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 import 'package:pavinet/pages/adminPages/adminPages.dart';
+import 'package:pavinet/pages/staffPages/staffPages.dart';
 import 'package:pavinet/pages/signupPage/signupPage.dart';
 import 'package:pavinet/pages/supplierPages/supplierPages.dart';
 import 'package:pavinet/Service/auth_service.dart';
@@ -40,10 +41,10 @@ class LogInPageState extends State<LogInPage> {
         context,
         MaterialPageRoute(builder: (_) => AdminPages()),
       );
-    } else if (result == 'User') {
+    } else if (result == 'Staff') {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => AdminPages()),
+        MaterialPageRoute(builder: (_) => StaffPages()),
       );
     } else if (result == 'Supplier') {
       Navigator.pushReplacement(
