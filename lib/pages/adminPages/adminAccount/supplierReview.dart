@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class SupplierReview extends StatefulWidget {
@@ -10,12 +11,9 @@ class SupplierReview extends StatefulWidget {
 }
 
 class _SupplierReviewState extends State<SupplierReview> {
-  final List<Map<String, String>> supplierAccounts = [
-    {"ID": "100", "Name": "Lina Enterprise", "Last Login": "21/10/2024 22:00"},
-    {"ID": "101", "Name": "Pak Abu", "Last Login": "21/10/2024 22:00"},
-  ];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void deleteAccount(int index) {
+  void deleteAccount(String docId) async {
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -27,14 +25,20 @@ class _SupplierReviewState extends State<SupplierReview> {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
-              setState(() {
-                supplierAccounts.removeAt(index);
-              });
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Account deleted successfully!')),
-              );
+            onPressed: () async {
+              try {
+                await _firestore.collection('users').doc(docId).delete();
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('Account deleted successfully!')),
+                );
+              } catch (e) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error: ${e.toString()}')),
+                );
+              }
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
@@ -43,54 +47,64 @@ class _SupplierReviewState extends State<SupplierReview> {
     );
   }
 
-  void viewDetails(Map<String, String> account) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text('Account Details: ${account["Name"]}'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('ID: ${account["ID"]}'),
-            Text('Name: ${account["Name"]}'),
-            Text('Last Login: ${account["Last Login"]}'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final filteredAccounts = supplierAccounts
-        .where((account) =>
-            account['Name']!.toLowerCase().contains(widget.searchQuery) ||
-            account['ID']!.toLowerCase().contains(widget.searchQuery))
-        .toList();
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore
+          .collection('users')
+          .where('role', isEqualTo: 'Supplier')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final accounts = snapshot.data!.docs.where((doc) {
+          final name = doc['name'].toLowerCase();
+          final id = doc.id.toLowerCase();
+          return name.contains(widget.searchQuery) ||
+              id.contains(widget.searchQuery);
+        }).toList();
 
-    return ListView.builder(
-      itemCount: filteredAccounts.length,
-      itemBuilder: (context, index) {
-        final account = filteredAccounts[index];
-        return Card(
-          child: ListTile(
-            title: Text('${account["Name"]} (ID: ${account["ID"]})'),
-            subtitle: Text('Last Login: ${account["Last Login"]}'),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () => deleteAccount(index),
-            ),
-            onTap: () => viewDetails(account),
-          ),
+        return ListView.builder(
+          itemCount: accounts.length,
+          itemBuilder: (context, index) {
+            final account = accounts[index];
+
+            // Safely retrieve document data
+
+            final data = account.data() as Map<String, dynamic>?;
+
+            // Check if the 'lastLogin' field exists and fetch its value
+
+            final Timestamp? lastLogin =
+                (data != null && data.containsKey('lastLogin'))
+                    ? data['lastLogin'] as Timestamp?
+                    : null;
+
+            // Convert the Timestamp to a readable string or set to 'Never' if null
+
+            final String lastLoginString =
+                lastLogin != null ? lastLogin.toDate().toString() : 'Never';
+
+            return Card(
+              child: ListTile(
+                title: Text('${data?['name']} (ID: ${account.id})'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Email: ${data?['email']}'),
+                    Text('Last Login: $lastLoginString'),
+                  ],
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => deleteAccount(account.id),
+                ),
+              ),
+            );
+          },
         );
       },
     );
   }
 }
-

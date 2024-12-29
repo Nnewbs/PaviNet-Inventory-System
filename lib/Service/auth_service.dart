@@ -29,6 +29,8 @@ class AuthService {
         'email': email.trim(),
         'phone': phone.trim(),
         'role': role, // Role determines if user is Admin or Supplier
+        'lastLogin':
+            null, // Initialize with null as the user hasn't logged in yet
       });
 
       // Indicate success
@@ -50,6 +52,12 @@ class AuthService {
         email: email.trim(),
         password: password.trim(),
       );
+
+      // Update the user's last login time in Firestore
+      await _firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .update({'lastLogin': FieldValue.serverTimestamp()});
 
       // Fetch the user's role from Firestore to determine access level
       DocumentSnapshot userDoc = await _firestore
