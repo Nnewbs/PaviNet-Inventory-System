@@ -8,38 +8,35 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Function to handle user signup
-  Future<String?> signup({
-    required String name,
-    required String email,
-    required String phone,
-    required String password,
-    required String role,
-  }) async {
-    try {
-      // Create user in Firebase Authentication with email and password
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password.trim(),
-      );
+ Future<String?> signup({
+  required String name,
+  required String email,
+  required String phone,
+  required String password,
+  required String role,
+}) async {
+  try {
+    // Create user in Firebase Authentication
+    UserCredential userCredential =
+        await _auth.createUserWithEmailAndPassword(
+      email: email.trim(),
+      password: password.trim(),
+    );
 
-      // Save additional user data (name, phone, role) in Firestore
-      await _firestore.collection('users').doc(userCredential.user!.uid).set({
-        'name': name.trim(),
-        'email': email.trim(),
-        'phone': phone.trim(),
-        'role': role, // Role determines if user is Admin or Supplier
-        'lastLogin':
-            null, // Initialize with null as the user hasn't logged in yet
-      });
+    // Save additional user data in Firestore
+    await _firestore.collection('users').doc(userCredential.user!.uid).set({
+      'name': name.trim(),
+      'email': email.trim(),
+      'phone': phone.trim(), // Ensure this matches the field in SupplierDetails
+      'role': role, 
+      'lastLogin': null,
+    });
 
-      // Indicate success
-      return 'Success';
-    } catch (e) {
-      // Return error message
-      return 'Signup failed: ${e.toString()}';
-    }
+    return 'Success';
+  } catch (e) {
+    return 'Signup failed: ${e.toString()}';
   }
+}
 
   // Function to handle user login
   Future<String?> login({
