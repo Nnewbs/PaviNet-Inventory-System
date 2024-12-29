@@ -46,8 +46,9 @@ class _SupplierDetailsState extends State<SupplierDetails> {
           setState(() {
             _nameController.text = data?['name'] ?? '';
             _companyController.text = data?['company'] ?? '';
-            _contactController.text = data?['phone'] ?? ''; // Correct field name
-            _emailController.text = data?['email'] ?? '';  // Correct field name
+            _contactController.text =
+                data?['phone'] ?? ''; // Correct field name
+            _emailController.text = data?['email'] ?? ''; // Correct field name
           });
         } else {
           print('User document does not exist in Firestore');

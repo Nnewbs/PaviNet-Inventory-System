@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 import 'package:pavinet/Service/auth_service.dart';
 import 'package:pavinet/pages/loginPage/loginPage.dart';
-
-final AuthService _authService = AuthService(); // Initialize AuthService
 
 class StaffProfile extends StatefulWidget {
   const StaffProfile({super.key});
@@ -14,181 +14,205 @@ class StaffProfile extends StatefulWidget {
 
 class _StaffProfileState extends State<StaffProfile> {
   final _formKey = GlobalKey<FormState>();
-  bool _isEditing = false;
+
+  final AuthService _authService = AuthService(); // Initialize AuthService
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _companyController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
+
+  bool _isEditing = false;
+  bool _isLoading = true;
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    _companyController.dispose();
-    _contactController.dispose();
-    _emailController.dispose();
-    _addressController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _fetchStaffProfile();
   }
 
-  void _saveDetails() {
+  Future<void> _fetchStaffProfile() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        final docSnapshot =
+            await _firestore.collection('users').doc(user.uid).get();
+
+        if (docSnapshot.exists) {
+          final data = docSnapshot.data();
+          print('Fetched data: $data'); // Debug log
+
+          setState(() {
+            _nameController.text = data?['name'] ?? '';
+            _contactController.text =
+                data?['phone'] ?? ''; // Correct field name
+            _emailController.text = data?['email'] ?? ''; // Correct field name
+          });
+        } else {
+          print('User document does not exist in Firestore');
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching details: ${e.toString()}')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _saveDetails() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isEditing = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Details saved successfully!')),
-      );
+
+      try {
+        final user = _auth.currentUser;
+        if (user != null) {
+          await _firestore.collection('users').doc(user.uid).update({
+            'name': _nameController.text.trim(),
+            'phone': _contactController.text.trim(),
+            'email': _emailController.text.trim(),
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Details saved successfully!')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving details: ${e.toString()}')),
+        );
+      }
     }
   }
 
-  void _signOut() async {
-    await _authService.signOut(); // Call the sign-out method
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Signed out successfully!')),
-    );
+  Future<void> _signOut() async {
+    await _authService.signOut();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => const LogInPage(), // Navigate to LoginScreen
-      ),
+      MaterialPageRoute(builder: (_) => const LogInPage()),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('Staff Profile', style: CustomeTextStyle.txtWhiteBold),
-        backgroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              color: Colors.white), // Back arrow icon
-          onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous screen
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.logout,
-              color: Colors.white, // Make the icon white
-            ),
-            onPressed: () => showDialog<String>(
-              context: context,
-              builder: (BuildContext context) => AlertDialog(
-                title: const Text('Logout Confirmation'),
-                content: const Text('Are you sure you want to log out?'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: _signOut, // Call _signOut on button press
-                    child: const Text('Log Out',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, 'Cancel'),
-                    child: const Text('Cancel',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-            ),
-            tooltip: 'Sign Out',
-          ),
-        ],
-      ),
-      backgroundColor: Colors.white, // Set the background color to white
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              const SizedBox(height: 16),
-              _buildTextField(
-                  'Name', _nameController, 'Please enter your name'),
-              const SizedBox(height: 16),
-              _buildTextField(
-                'Contact Number',
-                _contactController,
-                'Please enter your contact number',
-                TextInputType.phone,
-                r'^[0-9]+$',
-                'Please enter a valid contact number',
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                'Email Address',
-                _emailController,
-                'Please enter your email address',
-                TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: _isEditing
-                        ? _saveDetails
-                        : () {
-                            setState(() {
-                              _isEditing = true;
-                            });
-                          },
-                    style: CustomButtonStyle.bgButton,
-                    child: Text(_isEditing ? 'Save' : 'Edit',
-                        style: CustomeTextStyle.txtWhiteBold),
-                  ),
-                  if (_isEditing)
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _isEditing = false;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey,
-                      ),
-                      child: const Text('Cancel',
-                          style: CustomeTextStyle.txtWhiteBold),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  void dispose() {
+    _nameController.dispose();
+    _contactController.dispose();
+    _emailController.dispose();
+    super.dispose();
   }
 
-  Widget _buildTextField(
-    String label,
-    TextEditingController controller,
-    String validationMessage, [
-    TextInputType keyboardType = TextInputType.text,
-    String? validationPattern,
-    String? patternMessage,
-  ]) {
-    return TextFormField(
-      controller: controller,
-      enabled: _isEditing,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(),
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('Supplier Details', style: CustomeTextStyle.txtWhiteBold),
+          backgroundColor: Colors.black,
+          actions: [
+            IconButton(
+              onPressed: _signOut,
+              icon: const Icon(Icons.logout, color: Colors.white),
+            ),
+          ],
+        ),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    children: [
+                      TextFormField(
+                        controller: _nameController,
+                        enabled: _isEditing,
+                        decoration: const InputDecoration(
+                          labelText: 'Name',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _contactController,
+                        enabled: _isEditing,
+                        decoration: const InputDecoration(
+                          labelText: 'Contact Number',
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your contact number';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _emailController,
+                        enabled: _isEditing,
+                        decoration: const InputDecoration(
+                          labelText: 'Email Address',
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email address';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 32),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: _isEditing
+                                ? _saveDetails
+                                : () {
+                                    setState(() {
+                                      _isEditing = true;
+                                    });
+                                  },
+                            style: CustomButtonStyle.bgButton,
+                            child: Text(_isEditing ? 'Save' : 'Edit',
+                                style: CustomeTextStyle.txtWhiteBold),
+                          ),
+                          if (_isEditing)
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isEditing = false;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey,
+                              ),
+                              child: const Text('Cancel',
+                                  style: CustomeTextStyle.txtWhiteBold),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
       ),
-      keyboardType: keyboardType,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return validationMessage;
-        }
-        if (validationPattern != null &&
-            !RegExp(validationPattern).hasMatch(value)) {
-          return patternMessage;
-        }
-        return null;
-      },
     );
   }
 }
