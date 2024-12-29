@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
-import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierDashboard.dart';
-import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierMessages.dart';
-// import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierHistory.dart';
+import 'package:pavinet/pages/dashboard.dart';
+import 'package:pavinet/pages/supplierPages/supplierHome/supplierMessages.dart';
 
-class SupplierHome extends StatefulWidget {
-  const SupplierHome({super.key});
+class StaffHome extends StatefulWidget {
+  const StaffHome({super.key});
 
   @override
-  State<SupplierHome> createState() => _SupplierHomeState();
+  State<StaffHome> createState() => _StaffHomeState();
 }
 
-class _SupplierHomeState extends State<SupplierHome> {
+class _StaffHomeState extends State<StaffHome> {
   @override
   Widget build(BuildContext content) {
     return MaterialApp(
@@ -48,14 +47,11 @@ class _SupplierHomeState extends State<SupplierHome> {
                       tabs: [
                         Tab(text: 'Dashboard'),
                         Tab(text: 'Messages'),
-                        // Tab(text: 'History'),
                       ]),
-
-                  // ),
                 ),
                 Expanded(
                   child: TabBarView(children: [
-                    SupplierDashboard(),
+                    Dashboard(),
                     SupplierMessages(),
                   ]),
                 )

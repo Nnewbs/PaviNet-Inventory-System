@@ -5,14 +5,14 @@ import 'package:pavinet/pages/loginPage/loginPage.dart';
 
 final AuthService _authService = AuthService(); // Initialize AuthService
 
-class AdminProfile extends StatefulWidget {
-  const AdminProfile({super.key});
+class StaffProfile extends StatefulWidget {
+  const StaffProfile({super.key});
 
   @override
-  State<AdminProfile> createState() => _AdminProfileState();
+  State<StaffProfile> createState() => _StaffProfileState();
 }
 
-class _AdminProfileState extends State<AdminProfile> {
+class _StaffProfileState extends State<StaffProfile> {
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
 
@@ -61,7 +61,7 @@ class _AdminProfileState extends State<AdminProfile> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Admin Profile', style: CustomeTextStyle.txtWhiteBold),
+        title: Text('Staff Profile', style: CustomeTextStyle.txtWhiteBold),
         backgroundColor: Colors.black,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back,
@@ -72,10 +72,28 @@ class _AdminProfileState extends State<AdminProfile> {
         ),
         actions: [
           IconButton(
-            onPressed: _signOut, // Call _signOut on button press
             icon: const Icon(
               Icons.logout,
               color: Colors.white, // Make the icon white
+            ),
+            onPressed: () => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text('Logout Confirmation'),
+                content: const Text('Are you sure you want to log out?'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: _signOut, // Call _signOut on button press
+                    child: const Text('Log Out',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('Cancel',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
             ),
             tooltip: 'Sign Out',
           ),
@@ -92,9 +110,6 @@ class _AdminProfileState extends State<AdminProfile> {
               _buildTextField(
                   'Name', _nameController, 'Please enter your name'),
               const SizedBox(height: 16),
-              _buildTextField('Company', _companyController,
-                  'Please enter your company details'),
-              const SizedBox(height: 16),
               _buildTextField(
                 'Contact Number',
                 _contactController,
@@ -110,9 +125,6 @@ class _AdminProfileState extends State<AdminProfile> {
                 'Please enter your email address',
                 TextInputType.emailAddress,
               ),
-              const SizedBox(height: 16),
-              _buildTextField('Delivery Address', _addressController,
-                  'Please enter your delivery address'),
               const SizedBox(height: 32),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -125,10 +137,9 @@ class _AdminProfileState extends State<AdminProfile> {
                               _isEditing = true;
                             });
                           },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                    ),
-                    child: Text(_isEditing ? 'Save' : 'Edit'),
+                    style: CustomButtonStyle.bgButton,
+                    child: Text(_isEditing ? 'Save' : 'Edit',
+                        style: CustomeTextStyle.txtWhiteBold),
                   ),
                   if (_isEditing)
                     ElevatedButton(
@@ -140,7 +151,8 @@ class _AdminProfileState extends State<AdminProfile> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey,
                       ),
-                      child: const Text('Cancel'),
+                      child: const Text('Cancel',
+                          style: CustomeTextStyle.txtWhiteBold),
                     ),
                 ],
               ),

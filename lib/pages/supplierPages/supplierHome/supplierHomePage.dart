@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
-import 'package:pavinet/pages/adminPages/adminDashboard/adminDashboard.dart';
-import 'package:pavinet/pages/adminPages/adminDashboard/adminMessage.dart';
+import 'package:pavinet/pages/dashboard.dart';
+import 'package:pavinet/pages/supplierPages/supplierHome/supplierMessages.dart';
 
-class AdminHome extends StatefulWidget {
-  const AdminHome({super.key});
+class SupplierHome extends StatefulWidget {
+  const SupplierHome({super.key});
 
   @override
-  State<AdminHome> createState() => _AdminHomeState();
+  State<SupplierHome> createState() => _SupplierHomeState();
 }
 
-class _AdminHomeState extends State<AdminHome> {
+class _SupplierHomeState extends State<SupplierHome> {
   @override
   Widget build(BuildContext content) {
     return MaterialApp(
@@ -47,16 +47,12 @@ class _AdminHomeState extends State<AdminHome> {
                       tabs: [
                         Tab(text: 'Dashboard'),
                         Tab(text: 'Messages'),
-                        // Tab(text: 'History')
                       ]),
-
-                  // ),
                 ),
                 Expanded(
                   child: TabBarView(children: [
-                    AdminDashboard(),
-                    AdminMessages(),
-                    // SupplierHistory(),
+                    Dashboard(),
+                    SupplierMessages(),
                   ]),
                 )
               ],

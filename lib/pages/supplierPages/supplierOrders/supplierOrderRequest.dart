@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pavinet/customStyles/customStyles.dart';
 
 class SupplierOrderRequest extends StatefulWidget {
   const SupplierOrderRequest({super.key});
@@ -12,7 +13,8 @@ class _OrderRequestState extends State<SupplierOrderRequest> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController itemNameController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
-  final TextEditingController requestedQuantityController = TextEditingController();
+  final TextEditingController requestedQuantityController =
+      TextEditingController();
   final TextEditingController unitTypeController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
 
@@ -52,15 +54,12 @@ class _OrderRequestState extends State<SupplierOrderRequest> {
             const SizedBox(height: 24),
             Center(
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 30, vertical: 15),
-                  textStyle: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                style: CustomButtonStyle.bgButton,
                 onPressed: _submitForm,
-                child: const Text('CREATE NEW'),
+                child: const Text(
+                  'CREATE NEW',
+                  style: CustomeTextStyle.txtWhiteBold,
+                ),
               ),
             ),
           ],

@@ -147,20 +147,20 @@ class _SupplierDetailsState extends State<SupplierDetails> {
                   },
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _addressController,
-                  enabled: _isEditing,
-                  decoration: InputDecoration(
-                    labelText: 'Delivery Address',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your delivery address';
-                    }
-                    return null;
-                  },
-                ),
+                // TextFormField(
+                //   controller: _addressController,
+                //   enabled: _isEditing,
+                //   decoration: InputDecoration(
+                //     labelText: 'Delivery Address',
+                //     border: OutlineInputBorder(),
+                //   ),
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Please enter your delivery address';
+                //     }
+                //     return null;
+                //   },
+                // ),
                 const SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -173,10 +173,9 @@ class _SupplierDetailsState extends State<SupplierDetails> {
                                 _isEditing = true;
                               });
                             },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                      ),
-                      child: Text(_isEditing ? 'Save' : 'Edit'),
+                      style: CustomButtonStyle.bgButton,
+                      child: Text(_isEditing ? 'Save' : 'Edit',
+                          style: CustomeTextStyle.txtWhiteBold),
                     ),
                     if (_isEditing)
                       ElevatedButton(
@@ -188,7 +187,8 @@ class _SupplierDetailsState extends State<SupplierDetails> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey,
                         ),
-                        child: const Text('Cancel'),
+                        child: const Text('Cancel',
+                            style: CustomeTextStyle.txtWhiteBold),
                       ),
                   ],
                 ),

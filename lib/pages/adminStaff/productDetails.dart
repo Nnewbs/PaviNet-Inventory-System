@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 
@@ -139,7 +140,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 const SizedBox(height: 15),
                 // Category Type Dropdown
                 const Text("Category :"),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField2<String>(
                   value: selectedType,
                   items: typeOptions.map((type) {
                     return DropdownMenuItem(
@@ -163,7 +164,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
                 const SizedBox(height: 15),
                 // Vendor Dropdown
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField2<String>(
                   value: selectedVendor,
                   items: vendorOptions.map((vendor) {
                     return DropdownMenuItem(
