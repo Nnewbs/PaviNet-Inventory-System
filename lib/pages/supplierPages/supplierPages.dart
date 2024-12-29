@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pavinet/pages/supplierPages/supplierDashboard/supplierHome.dart';
+import 'package:pavinet/pages/supplierPages/supplierHome/supplierHomePage.dart';
 import 'package:pavinet/pages/supplierPages/supplierNotification/supplierNotiPage.dart';
 import 'package:pavinet/pages/supplierPages/supplierOrders/supplierOrders.dart';
 import 'package:pavinet/pages/supplierPages/supplierProfile/supplierDetails.dart';
@@ -29,6 +29,10 @@ class _SupplierPagesState extends State<SupplierPages> {
   @override
   Widget build(BuildContext content) {
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          toolbarHeight: 0,
+        ),
         body: Center(
           child: _widgetOptions.elementAt(_selectedIndex),
         ),

@@ -47,6 +47,7 @@ class _AccountReviewState extends State<AccountReview> {
                     ],
                   ),
                   child: TabBar(
+                    dividerColor: Colors.transparent,
                     indicatorColor: Colors.orange[700],
                     labelColor: Colors.orange[700],
                     unselectedLabelColor: Colors.black,
@@ -60,7 +61,7 @@ class _AccountReviewState extends State<AccountReview> {
                     ),
                     tabs: const [
                       Tab(
-                        icon: Icon(Icons.person),
+                        icon: Icon(Icons.people),
                         text: 'Staff',
                       ),
                       Tab(

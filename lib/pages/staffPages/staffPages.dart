@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:pavinet/pages/adminPages/adminAccount/accountReview.dart';
-import 'package:pavinet/pages/adminPages/adminHome/adminHomePage.dart';
 import 'package:pavinet/pages/adminStaff/orderReview.dart';
 import 'package:pavinet/pages/adminStaff/productDetails.dart';
+import 'package:pavinet/pages/staffPages/staffProfile.dart';
 import 'package:pavinet/pages/adminStaff/category.dart';
-import 'package:pavinet/pages/loginPage/loginPage.dart';
+import 'package:pavinet/pages/staffPages/staffHome/staffHomePage.dart';
 
-class AdminPages extends StatefulWidget {
-  const AdminPages({super.key});
+class StaffPages extends StatefulWidget {
+  const StaffPages({super.key});
 
   @override
-  State<AdminPages> createState() => _AdminPagesState();
+  State<StaffPages> createState() => _StaffPagesState();
 }
 
-class _AdminPagesState extends State<AdminPages> {
+class _StaffPagesState extends State<StaffPages> {
   int _selectedIndex = 0;
   String adminName = "Loading..."; // Placeholder for admin name
 
   static const List<Widget> _widgetOptions = <Widget>[
-    AdminHome(),
+    StaffHome(),
     OrderReview(),
     ProductDetails(),
     Category(),
-    AccountReview(),
   ];
 
   @override
@@ -34,7 +32,7 @@ class _AdminPagesState extends State<AdminPages> {
   void _fetchAdminName() async {
     await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
     setState(() {
-      adminName = "Admin"; // Replace with fetched value
+      adminName = "Staff"; // Replace with fetched value
     });
   }
 
@@ -54,7 +52,10 @@ class _AdminPagesState extends State<AdminPages> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(''),
+            const Text(
+              '',
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
             Row(
               children: [
                 Text(
@@ -63,34 +64,17 @@ class _AdminPagesState extends State<AdminPages> {
                 ),
                 const SizedBox(width: 8),
                 IconButton(
-                  icon: const Icon(Icons.logout, color: Colors.white),
-                  onPressed: () => showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => AlertDialog(
-                      title: const Text('Logout Confirmation'),
-                      content: const Text('Are you sure you want to log out?'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    const LogInPage(), // Navigate to LoginScreen
-                              ),
-                            );
-                          },
-                          child: const Text('Log Out',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, 'Cancel'),
-                          child: const Text('Cancel',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
-                  ),
+                  icon: const Icon(Icons.account_circle, color: Colors.white),
+                  onPressed: () {
+                    // Navigate to AdminProfile using Navigator.push
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const StaffProfile(),
+                      ),
+                    );
+                  },
+                  tooltip: 'Edit Profile',
                 ),
               ],
             ),
@@ -115,8 +99,8 @@ class _AdminPagesState extends State<AdminPages> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.add_box), label: 'Product'),
             BottomNavigationBarItem(icon: Icon(Icons.apps), label: 'Category'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person_remove), label: 'Account'),
+            // BottomNavigationBarItem(
+            //     icon: Icon(Icons.person_remove), label: 'Account'),
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.orange[700],

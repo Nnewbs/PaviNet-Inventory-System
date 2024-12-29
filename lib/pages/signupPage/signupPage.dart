@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
-import 'package:pavinet/pages/adminPages/adminPages.dart';
 import 'package:pavinet/pages/loginPage/loginPage.dart';
+import 'package:pavinet/pages/staffPages/staffPages.dart';
 import 'package:pavinet/pages/supplierPages/supplierPages.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:pavinet/Service/auth_service.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -21,11 +22,12 @@ class SignUpPageState extends State<SignUpPage> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  String selectedRole = "User";
+  String selectedRole = "";
   bool _isLoading = false;
   bool isPasswordHidden = true;
+  bool isConfirmPasswordHidden = true;
 
-  final List<String> roles = ["User", "Admin", "Supplier"];
+  final List<String> roles = ["Supplier", "Staff"];
 
   void _signup() async {
     setState(() {
@@ -48,8 +50,8 @@ class SignUpPageState extends State<SignUpPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => selectedRole == 'Admin'
-              ? AdminPages()
+          builder: (_) => selectedRole == 'Staff'
+              ? StaffPages()
               : selectedRole == 'Supplier'
                   ? SupplierPages()
                   : LogInPage(),
@@ -151,26 +153,46 @@ class SignUpPageState extends State<SignUpPage> {
                         hintText: 'CONFIRM PASSWORD',
                         prefixIcon:
                             const Icon(Icons.lock_outline, color: Colors.grey),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            isConfirmPasswordHidden
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isConfirmPasswordHidden =
+                                  !isConfirmPasswordHidden;
+                            });
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(height: 15),
-                    DropdownButtonFormField<String>(
-                      value: selectedRole,
+                    DropdownButtonFormField2<String>(
+                      // value: selectedRole,
                       items: roles.map((role) {
                         return DropdownMenuItem(
                           value: role,
-                          child: Text(role, style: CustomeTextStyle.txtGrey),
+                          child: Text(role,
+                              style: TextStyle(fontWeight: FontWeight.normal)),
                         );
                       }).toList(),
+                      hint: const Text(
+                        'ROLE',
+                        style: TextStyle(
+                            color: Color(0xFF9E9E9E),
+                            fontWeight: FontWeight.normal),
+                      ),
                       onChanged: (value) {
                         setState(() {
                           selectedRole = value!;
                         });
                       },
-                      decoration:
-                          CustomTextFieldStyle.textFieldDecoration.copyWith(
-                        hintText: 'ROLE',
-                      ),
+                      decoration: CustomTextFieldStyle.dropDownDecoration
+                          .copyWith(
+                              prefixIcon:
+                                  Icon(Icons.account_box, color: Colors.grey)),
                     ),
                     const SizedBox(height: 20),
                     _isLoading

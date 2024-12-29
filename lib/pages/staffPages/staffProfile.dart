@@ -5,21 +5,21 @@ import 'package:pavinet/customStyles/customStyles.dart';
 import 'package:pavinet/Service/auth_service.dart';
 import 'package:pavinet/pages/loginPage/loginPage.dart';
 
-class SupplierDetails extends StatefulWidget {
-  const SupplierDetails({super.key});
+class StaffProfile extends StatefulWidget {
+  const StaffProfile({super.key});
 
   @override
-  State<SupplierDetails> createState() => _SupplierDetailsState();
+  State<StaffProfile> createState() => _StaffProfileState();
 }
 
-class _SupplierDetailsState extends State<SupplierDetails> {
+class _StaffProfileState extends State<StaffProfile> {
   final _formKey = GlobalKey<FormState>();
-  final AuthService _authService = AuthService();
+
+  final AuthService _authService = AuthService(); // Initialize AuthService
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _companyController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
@@ -29,10 +29,10 @@ class _SupplierDetailsState extends State<SupplierDetails> {
   @override
   void initState() {
     super.initState();
-    _fetchSupplierDetails();
+    _fetchStaffProfile();
   }
 
-  Future<void> _fetchSupplierDetails() async {
+  Future<void> _fetchStaffProfile() async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
@@ -45,7 +45,6 @@ class _SupplierDetailsState extends State<SupplierDetails> {
 
           setState(() {
             _nameController.text = data?['name'] ?? '';
-            _companyController.text = data?['company'] ?? '';
             _contactController.text =
                 data?['phone'] ?? ''; // Correct field name
             _emailController.text = data?['email'] ?? ''; // Correct field name
@@ -76,9 +75,6 @@ class _SupplierDetailsState extends State<SupplierDetails> {
         if (user != null) {
           await _firestore.collection('users').doc(user.uid).update({
             'name': _nameController.text.trim(),
-            'company': _companyController.text.trim().isEmpty
-                ? null
-                : _companyController.text.trim(),
             'phone': _contactController.text.trim(),
             'email': _emailController.text.trim(),
           });
@@ -106,7 +102,6 @@ class _SupplierDetailsState extends State<SupplierDetails> {
   @override
   void dispose() {
     _nameController.dispose();
-    _companyController.dispose();
     _contactController.dispose();
     _emailController.dispose();
     super.dispose();
@@ -149,15 +144,6 @@ class _SupplierDetailsState extends State<SupplierDetails> {
                           }
                           return null;
                         },
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _companyController,
-                        enabled: _isEditing,
-                        decoration: const InputDecoration(
-                          labelText: 'Company (Optional)',
-                          border: OutlineInputBorder(),
-                        ),
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
