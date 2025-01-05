@@ -95,14 +95,6 @@ class _SupplierDetailsState extends State<SupplierDetails> {
     }
   }
 
-  Future<void> _signOut() async {
-    await _authService.signOut();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LogInPage()),
-    );
-  }
-
   @override
   void dispose() {
     _nameController.dispose();
@@ -123,8 +115,35 @@ class _SupplierDetailsState extends State<SupplierDetails> {
           backgroundColor: Colors.black,
           actions: [
             IconButton(
-              onPressed: _signOut,
               icon: const Icon(Icons.logout, color: Colors.white),
+              onPressed: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Logout Confirmation'),
+                  content: const Text('Are you sure you want to log out?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context); // Close the dialog
+                      },
+                      child: const Text('Cancel',
+                          style: TextStyle(color: Colors.grey)),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        await _authService.signOut();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const LogInPage()),
+                        );
+                      },
+                      child: const Text('Log Out',
+                          style: TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

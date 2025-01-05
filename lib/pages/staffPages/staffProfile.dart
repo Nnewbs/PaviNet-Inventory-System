@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
-import 'package:pavinet/Service/auth_service.dart';
 import 'package:pavinet/pages/loginPage/loginPage.dart';
+import 'package:pavinet/pages/staffPages/staffPages.dart';
 
 class StaffProfile extends StatefulWidget {
   const StaffProfile({super.key});
@@ -15,7 +15,6 @@ class StaffProfile extends StatefulWidget {
 class _StaffProfileState extends State<StaffProfile> {
   final _formKey = GlobalKey<FormState>();
 
-  final AuthService _authService = AuthService(); // Initialize AuthService
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -41,13 +40,10 @@ class _StaffProfileState extends State<StaffProfile> {
 
         if (docSnapshot.exists) {
           final data = docSnapshot.data();
-          print('Fetched data: $data'); // Debug log
-
           setState(() {
             _nameController.text = data?['name'] ?? '';
-            _contactController.text =
-                data?['phone'] ?? ''; // Correct field name
-            _emailController.text = data?['email'] ?? ''; // Correct field name
+            _contactController.text = data?['phone'] ?? '';
+            _emailController.text = data?['email'] ?? '';
           });
         } else {
           print('User document does not exist in Firestore');
@@ -55,7 +51,7 @@ class _StaffProfileState extends State<StaffProfile> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching details: ${e.toString()}')),
+        SnackBar(content: Text('Error fetching details: $e')),
       );
     } finally {
       setState(() {
@@ -85,18 +81,10 @@ class _StaffProfileState extends State<StaffProfile> {
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving details: ${e.toString()}')),
+          SnackBar(content: Text('Error saving details: $e')),
         );
       }
     }
-  }
-
-  Future<void> _signOut() async {
-    await _authService.signOut();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LogInPage()),
-    );
   }
 
   @override
@@ -114,12 +102,45 @@ class _StaffProfileState extends State<StaffProfile> {
       home: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Supplier Details', style: CustomeTextStyle.txtWhiteBold),
+          title: Text('Staff Profile', style: CustomeTextStyle.txtWhiteBold),
           backgroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const StaffPages()));
+            },
+          ),
           actions: [
             IconButton(
-              onPressed: _signOut,
               icon: const Icon(Icons.logout, color: Colors.white),
+              onPressed: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Logout Confirmation'),
+                  content: const Text('Are you sure you want to log out?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const LogInPage(), // Navigate to LoginScreen
+                          ),
+                        );
+                      },
+                      child: const Text('Log Out',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
