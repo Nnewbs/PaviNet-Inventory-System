@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pavinet/customStyles/customStyles.dart';
 
 class SupplierOrderRequest extends StatefulWidget {
   const SupplierOrderRequest({super.key});
@@ -19,51 +18,49 @@ class _OrderRequestState extends State<SupplierOrderRequest> {
   final TextEditingController unitTypeController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
 
+  // Dummy data for testing Firebase
+  final List<Map<String, dynamic>> _supplierOrderRequests = [];
+
   @override
-  Widget build(BuildContext content) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Supplier Information
-            _buildSectionTitle('Supplier Information'),
-            _buildInputField('Name', nameController),
-            _buildInputField('Phone Number', phoneController,
-                keyboardType: TextInputType.phone),
-
-            // Item Details
-            const SizedBox(height: 16),
-            _buildSectionTitle('Item Details'),
-            _buildInputField('Item Name', itemNameController),
-            _buildInputField('Category', categoryController),
-
-            // Quantity Section
-            const SizedBox(height: 16),
-            _buildSectionTitle('Quantity'),
-            _buildInputField('Requested Quantity', requestedQuantityController,
-                keyboardType: TextInputType.number),
-            _buildInputField('Unit Type', unitTypeController),
-
-            // Notes
-            const SizedBox(height: 16),
-            _buildSectionTitle('Notes'),
-            _buildNotesField(),
-
-            // Submit Button
-            const SizedBox(height: 24),
-            Center(
-              child: ElevatedButton(
-                style: CustomButtonStyle.bgButton,
-                onPressed: _submitForm,
-                child: const Text(
-                  'CREATE NEW',
-                  style: CustomeTextStyle.txtWhiteBold,
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Supplier Order Request')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle('Supplier Information'),
+              _buildInputField('Name', nameController),
+              _buildInputField('Phone Number', phoneController,
+                  keyboardType: TextInputType.phone),
+              const SizedBox(height: 16),
+              _buildSectionTitle('Item Details'),
+              _buildInputField('Item Name', itemNameController),
+              _buildInputField('Category', categoryController),
+              const SizedBox(height: 16),
+              _buildSectionTitle('Quantity'),
+              _buildInputField(
+                  'Requested Quantity', requestedQuantityController,
+                  keyboardType: TextInputType.number),
+              _buildInputField('Unit Type', unitTypeController),
+              const SizedBox(height: 16),
+              _buildSectionTitle('Notes'),
+              _buildNotesField(),
+              const SizedBox(height: 24),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  child: const Text(
+                    'CREATE NEW',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -136,18 +133,28 @@ class _OrderRequestState extends State<SupplierOrderRequest> {
     );
   }
 
-  final List<Map<String, dynamic>> _supplierOrderRequests = [];
-
-// Use it to store supplier order data after submission
+  // Submit form data to Firebase
   void _submitForm() async {
     final supplierData = {
-      'supplierName': nameController.text,
-      'phoneNumber': phoneController.text,
-      'itemName': itemNameController.text,
-      'category': categoryController.text,
-      'requestedQuantity': requestedQuantityController.text,
-      'unitType': unitTypeController.text,
-      'notes': notesController.text,
+      'supplierName': nameController.text.isNotEmpty
+          ? nameController.text
+          : 'Default Supplier',
+      'phoneNumber':
+          phoneController.text.isNotEmpty ? phoneController.text : '0000000000',
+      'itemName': itemNameController.text.isNotEmpty
+          ? itemNameController.text
+          : 'Default Item',
+      'category': categoryController.text.isNotEmpty
+          ? categoryController.text
+          : 'Default Category',
+      'requestedQuantity': requestedQuantityController.text.isNotEmpty
+          ? requestedQuantityController.text
+          : '1',
+      'unitType':
+          unitTypeController.text.isNotEmpty ? unitTypeController.text : 'unit',
+      'notes': notesController.text.isNotEmpty
+          ? notesController.text
+          : 'No notes provided',
       'createdAt': DateTime.now().toIso8601String(),
     };
 
@@ -158,13 +165,13 @@ class _OrderRequestState extends State<SupplierOrderRequest> {
 
       if (!mounted) return;
 
-      // Update the contents of the list
+      // Update the UI to show the new data
       setState(() {
         _supplierOrderRequests.add(supplierData);
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Order submitted successfully')),
+        const SnackBar(content: Text('Order submitted successfully!')),
       );
 
       // Clear form fields
