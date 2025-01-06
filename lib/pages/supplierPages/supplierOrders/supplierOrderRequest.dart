@@ -19,10 +19,6 @@ class _OrderRequestState extends State<SupplierOrderRequest> {
   final TextEditingController unitTypeController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
 
-  // Reference to Firestore collection
-  final CollectionReference orderRequestCollection =
-      FirebaseFirestore.instance.collection('orderReq');
-
   @override
   Widget build(BuildContext content) {
     return Padding(
@@ -140,29 +136,38 @@ class _OrderRequestState extends State<SupplierOrderRequest> {
     );
   }
 
-  Future<void> _submitForm() async {
+  final List<Map<String, dynamic>> _supplierOrderRequests = [];
+
+// Use it to store supplier order data after submission
+  void _submitForm() async {
+    final supplierData = {
+      'supplierName': nameController.text,
+      'phoneNumber': phoneController.text,
+      'itemName': itemNameController.text,
+      'category': categoryController.text,
+      'requestedQuantity': requestedQuantityController.text,
+      'unitType': unitTypeController.text,
+      'notes': notesController.text,
+      'createdAt': DateTime.now().toIso8601String(),
+    };
+
     try {
-      // Collect data from form fields
-      Map<String, dynamic> orderData = {
-        'supplierName': nameController.text,
-        'phoneNumber': phoneController.text,
-        'itemName': itemNameController.text,
-        'category': categoryController.text,
-        'requestedQuantity': requestedQuantityController.text,
-        'unitType': unitTypeController.text,
-        'notes': notesController.text,
-        'createdAt': Timestamp.now(), // Add timestamp
-      };
+      await FirebaseFirestore.instance
+          .collection('supplierOrders')
+          .add(supplierData);
 
-      // Save data to Firestore
-      await orderRequestCollection.add(orderData);
+      if (!mounted) return;
 
-      // Show success message
+      // Update the contents of the list
+      setState(() {
+        _supplierOrderRequests.add(supplierData);
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Order Request Created Successfully!')),
+        const SnackBar(content: Text('Order submitted successfully')),
       );
 
-      // Clear fields
+      // Clear form fields
       nameController.clear();
       phoneController.clear();
       itemNameController.clear();
@@ -171,9 +176,10 @@ class _OrderRequestState extends State<SupplierOrderRequest> {
       unitTypeController.clear();
       notesController.clear();
     } catch (e) {
-      // Show error message
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to create order: $e')),
+        SnackBar(content: Text('Failed to submit order: $e')),
       );
     }
   }
