@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
-import 'package:pavinet/pages/adminPages/adminHome/adminMessage.dart';
+import 'package:pavinet/pages/chat.dart';
 import 'package:pavinet/pages/dashboard.dart';
 
 class AdminHome extends StatefulWidget {
@@ -52,7 +52,7 @@ class _AdminHomeState extends State<AdminHome> {
                 Expanded(
                   child: TabBarView(children: [
                     Dashboard(),
-                    AdminMessages(),
+                    Chat(),
                   ]),
                 )
               ],

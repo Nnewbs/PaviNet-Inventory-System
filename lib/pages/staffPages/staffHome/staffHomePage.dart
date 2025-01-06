@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
+import 'package:pavinet/pages/chat.dart';
 import 'package:pavinet/pages/dashboard.dart';
-import 'package:pavinet/pages/supplierPages/supplierHome/supplierMessages.dart';
 
 class StaffHome extends StatefulWidget {
   const StaffHome({super.key});
@@ -52,7 +52,7 @@ class _StaffHomeState extends State<StaffHome> {
                 Expanded(
                   child: TabBarView(children: [
                     Dashboard(),
-                    SupplierMessages(),
+                    Chat(),
                   ]),
                 )
               ],
