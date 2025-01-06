@@ -1,14 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pavinet/customstyles/customStyles.dart';
 
-class SupplierMessages extends StatefulWidget {
-  const SupplierMessages({super.key});
+class Chat extends StatefulWidget {
+  const Chat({super.key});
 
   @override
-  State<SupplierMessages> createState() => _SupplierMessagesState();
+  State<Chat> createState() => _ChatState();
 }
 
-class _SupplierMessagesState extends State<SupplierMessages> {
+class _ChatState extends State<Chat> {
+  TextEditingController msgController = TextEditingController();
+
+  sendMessage(String message) async {
+    FirebaseFirestore.instance.collection("message").doc(message).set({
+      "Message": message,
+    }).then((value) {
+      print("Message sent.");
+    });
+  }
+
   @override
   Widget build(BuildContext content) {
     return Scaffold(
@@ -33,6 +44,7 @@ class _SupplierMessagesState extends State<SupplierMessages> {
                             borderRadius: BorderRadius.circular(5)),
                         child: Scrollbar(
                           child: TextField(
+                            controller: msgController,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                             ),
@@ -50,6 +62,7 @@ class _SupplierMessagesState extends State<SupplierMessages> {
                         child: ElevatedButton(
                             style: CustomButtonStyle.bgButton,
                             onPressed: () {
+                              sendMessage(msgController.text.toString());
                               print("SEND MESSAGE");
                             },
                             child: const Text(
