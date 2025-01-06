@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Category extends StatefulWidget {
   const Category({super.key});
@@ -21,47 +22,22 @@ class _CategoryState extends State<Category> {
   // Search input
   String searchQuery = "";
 
-  // Sample data with categories
-  final List<Map<String, String>> items = [
-    {
-      "title": "Choco Moist",
-      "owner": "Lina Enterprise",
-      "price": "RM 6.50",
-      "category": "Bakery",
-    },
-    {
-      "title": "Cendol",
-      "owner": "Pak Abu",
-      "price": "RM 5.50",
-      "category": "Fresh",
-    },
-    {
-      "title": "Wantan",
-      "owner": "Lina Enterprise",
-      "price": "RM 5.50",
-      "category": "Prepared",
-    },
-    {
-      "title": "Tart",
-      "owner": "Lina Enterprise",
-      "price": "RM 7.50",
-      "category": "Bakery",
-    },
-  ];
-
-  // Filtered list based on category and search query
-  List<Map<String, String>> get filteredItems {
-    return items.where((item) {
-      final matchesCategory = selectedCategory == "All Category" ||
-          item["category"] == selectedCategory;
-
-      final matchesSearch = searchQuery.isEmpty ||
-          item["title"]!.toLowerCase().contains(searchQuery.toLowerCase()) ||
-          item["owner"]!.toLowerCase().contains(searchQuery.toLowerCase());
-
-      return matchesCategory && matchesSearch;
+    // Fetch data from Firestore
+  Future<List<Map<String, dynamic>>> fetchItems() async {
+    final snapshot = await FirebaseFirestore.instance.collection('items').get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return {
+        "id": doc.id, // Keep track of the document ID
+        "title": data["title"] ?? "",
+        "owner": data["owner"] ?? "",
+        "price": data["price"] ?? "",
+        "category": data["category"] ?? "",
+        "imagePath": data["imagePath"] ?? "default_image.png", // Default if no image
+      };
     }).toList();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -137,91 +113,118 @@ class _CategoryState extends State<Category> {
 
             // Food Items Grid
             Expanded(
-              child: filteredItems.isEmpty
-                  ? Center(
-                      child: Text(
-                        "No items found",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  : GridView.builder(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 8.0),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.7,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                      ),
-                      itemCount: filteredItems.length,
-                      itemBuilder: (context, index) {
-                        final item = filteredItems[index];
-                        return Card(
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Bigger Image Placeholder
-                              Container(
-                                height: 130,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300], // Placeholder color
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(12.0),
-                                    topRight: Radius.circular(12.0),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Icon(Icons.image,
-                                      color: Colors.grey[600], size: 40),
-                                ),
-                              ),
-                              // Food Details
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 6.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item["title"]!,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      item["owner"]!,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      item["price"]!,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Colors.orange,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: fetchItems(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Error fetching data"),
+                    );
+                  }
+                  final filteredItems = snapshot.data!.where((item) {
+                    final matchesCategory = selectedCategory == "All Category" ||
+                        item["category"] == selectedCategory;
+
+                    final matchesSearch = searchQuery.isEmpty ||
+                        item["title"]!.toLowerCase().contains(searchQuery.toLowerCase()) ||
+                        item["owner"]!.toLowerCase().contains(searchQuery.toLowerCase());
+
+                    return matchesCategory && matchesSearch;
+                  }).toList();
+                  
+                  return GridView.builder(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 8.0),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.7,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
                     ),
+                    itemCount: filteredItems.length,
+                    itemBuilder: (context, index) {
+                      final item = filteredItems[index];
+                      // Assuming each item has an 'imagePath' field that stores the image filename
+                      final imagePath = item["imagePath"] ?? "default_image.png"; // Default image if not found
+
+                      return Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Display Image from assets
+                            Container(
+                              height: 130,
+                              decoration: BoxDecoration(
+         
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(12.0),
+                                  topRight: Radius.circular(12.0),
+                                ),
+                              ),
+                              child: Image.asset(
+                                'assets/images/$imagePath', // Dynamic path
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Center(
+                                    child: Icon(
+                                      Icons.broken_image,
+                                      size: 40,
+                                      color: Colors.grey,
+                                    ), // Fallback icon
+                                  );
+                                },
+                              ),
+                            ),
+                            // Food Details
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item["title"] ?? "No Title",  // Default value if title is null
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    item["owner"] ?? "No Owner",  // Default value if owner is null
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    item["price"] ?? "No Price",  // Default value if price is null
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Colors.orange,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
