@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 
 class SupplierOrderRequest extends StatefulWidget {
@@ -17,6 +18,10 @@ class _OrderRequestState extends State<SupplierOrderRequest> {
       TextEditingController();
   final TextEditingController unitTypeController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
+
+  // Reference to Firestore collection
+  final CollectionReference orderRequestCollection =
+      FirebaseFirestore.instance.collection('orderReq');
 
   @override
   Widget build(BuildContext content) {
@@ -135,13 +140,41 @@ class _OrderRequestState extends State<SupplierOrderRequest> {
     );
   }
 
-  void _submitForm() {
-    print('Supplier Name: ${nameController.text}');
-    print('Phone Number: ${phoneController.text}');
-    print('Item Name: ${itemNameController.text}');
-    print('Category: ${categoryController.text}');
-    print('Requested Quantity: ${requestedQuantityController.text}');
-    print('Unit Type: ${unitTypeController.text}');
-    print('Notes: ${notesController.text}');
+  Future<void> _submitForm() async {
+    try {
+      // Collect data from form fields
+      Map<String, dynamic> orderData = {
+        'supplierName': nameController.text,
+        'phoneNumber': phoneController.text,
+        'itemName': itemNameController.text,
+        'category': categoryController.text,
+        'requestedQuantity': requestedQuantityController.text,
+        'unitType': unitTypeController.text,
+        'notes': notesController.text,
+        'createdAt': Timestamp.now(), // Add timestamp
+      };
+
+      // Save data to Firestore
+      await orderRequestCollection.add(orderData);
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Order Request Created Successfully!')),
+      );
+
+      // Clear fields
+      nameController.clear();
+      phoneController.clear();
+      itemNameController.clear();
+      categoryController.clear();
+      requestedQuantityController.clear();
+      unitTypeController.clear();
+      notesController.clear();
+    } catch (e) {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to create order: $e')),
+      );
+    }
   }
 }
