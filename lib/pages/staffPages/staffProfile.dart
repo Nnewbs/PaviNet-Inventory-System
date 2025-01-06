@@ -1,6 +1,9 @@
+import 'dart:convert'; // For Base64 encoding/decoding
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 import 'package:pavinet/pages/loginPage/loginPage.dart';
 import 'package:pavinet/pages/staffPages/staffPages.dart';
@@ -22,6 +25,8 @@ class _StaffProfileState extends State<StaffProfile> {
   final TextEditingController _contactController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
+  File? _profileImage; // Locally picked image
+  String? _profileImageBase64; // Base64 string of the image
   bool _isEditing = false;
   bool _isLoading = true;
 
@@ -44,6 +49,7 @@ class _StaffProfileState extends State<StaffProfile> {
             _nameController.text = data?['name'] ?? '';
             _contactController.text = data?['phone'] ?? '';
             _emailController.text = data?['email'] ?? '';
+            _profileImageBase64 = data?['profileImageBase64'];
           });
         } else {
           print('User document does not exist in Firestore');
@@ -60,6 +66,24 @@ class _StaffProfileState extends State<StaffProfile> {
     }
   }
 
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      final File imageFile = File(image.path);
+
+      // Convert image to Base64
+      final bytes = await imageFile.readAsBytes();
+      final base64String = base64Encode(bytes);
+
+      setState(() {
+        _profileImage = imageFile;
+        _profileImageBase64 = base64String;
+      });
+    }
+  }
+
   Future<void> _saveDetails() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -69,10 +93,12 @@ class _StaffProfileState extends State<StaffProfile> {
       try {
         final user = _auth.currentUser;
         if (user != null) {
+          // Save details and Base64 image in Firestore
           await _firestore.collection('users').doc(user.uid).update({
             'name': _nameController.text.trim(),
             'phone': _contactController.text.trim(),
             'email': _emailController.text.trim(),
+            'profileImageBase64': _profileImageBase64,
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -125,8 +151,7 @@ class _StaffProfileState extends State<StaffProfile> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (_) =>
-                                const LogInPage(), // Navigate to LoginScreen
+                            builder: (_) => const LogInPage(),
                           ),
                         );
                       },
@@ -152,6 +177,25 @@ class _StaffProfileState extends State<StaffProfile> {
                   key: _formKey,
                   child: ListView(
                     children: [
+                      Center(
+                        child: GestureDetector(
+                          onTap: _isEditing ? _pickImage : null,
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: _profileImage != null
+                                ? FileImage(_profileImage!)
+                                : (_profileImageBase64 != null
+                                    ? MemoryImage(
+                                        base64Decode(_profileImageBase64!))
+                                    : null),
+                            child: _profileImage == null &&
+                                    _profileImageBase64 == null
+                                ? const Icon(Icons.person, size: 50)
+                                : null,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       TextFormField(
                         controller: _nameController,
                         enabled: _isEditing,
