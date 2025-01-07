@@ -2,7 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 
-//Update and Delete Item - connect with Category Page
+//Add Item
 class ProductDetails extends StatefulWidget {
   const ProductDetails({super.key});
 
@@ -36,24 +36,19 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
   }
 
-  // Update button action
-  void handleUpdate() {
+  // Add button action
+  void handleAdd() {
     if (_formKey.currentState!.validate()) {
-      showSuccessPrompt("updated");
+      showSuccessPrompt("added");
+      // Clear fields after success
+      productNameController.clear();
+      descriptionController.clear();
+      stockQuantityController.clear();
+      setState(() {
+        selectedType = null;
+        selectedVendor = null;
+      });
     }
-  }
-
-  // Delete button action
-  void handleDelete() {
-    showSuccessPrompt("deleted");
-    // Clear fields after delete
-    productNameController.clear();
-    descriptionController.clear();
-    stockQuantityController.clear();
-    setState(() {
-      selectedType = null;
-      selectedVendor = null;
-    });
   }
 
   @override
@@ -198,26 +193,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: handleDelete,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                      ),
-                      child: const Text(
-                        "DELETE",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: handleUpdate,
+                      onPressed: handleAdd,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 24, vertical: 12),
                       ),
                       child: const Text(
-                        "UPDATE",
+                        "ADD",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
