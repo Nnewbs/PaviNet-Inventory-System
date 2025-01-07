@@ -2,7 +2,6 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 
-//Update and Delete Item - connect with Category Page
 class ProductDetails extends StatefulWidget {
   const ProductDetails({super.key});
 
@@ -34,6 +33,21 @@ class _ProductDetailsState extends State<ProductDetails> {
         backgroundColor: Colors.green,
       ),
     );
+  }
+
+  // Add button action
+  void handleAdd() {
+    if (_formKey.currentState!.validate()) {
+      showSuccessPrompt("added");
+      // Clear fields after success
+      productNameController.clear();
+      descriptionController.clear();
+      stockQuantityController.clear();
+      setState(() {
+        selectedType = null;
+        selectedVendor = null;
+      });
+    }
   }
 
   // Update button action
@@ -197,6 +211,18 @@ class _ProductDetailsState extends State<ProductDetails> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    ElevatedButton(
+                      onPressed: handleAdd,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                      ),
+                      child: const Text(
+                        "ADD",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                     ElevatedButton(
                       onPressed: handleDelete,
                       style: ElevatedButton.styleFrom(
