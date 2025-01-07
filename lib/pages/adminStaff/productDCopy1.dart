@@ -36,21 +36,6 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
   }
 
-  // Add button action
-  void handleAdd() {
-    if (_formKey.currentState!.validate()) {
-      showSuccessPrompt("added");
-      // Clear fields after success
-      productNameController.clear();
-      descriptionController.clear();
-      stockQuantityController.clear();
-      setState(() {
-        selectedType = null;
-        selectedVendor = null;
-      });
-    }
-  }
-
   // Update button action
   void handleUpdate() {
     if (_formKey.currentState!.validate()) {
@@ -212,18 +197,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                      onPressed: handleAdd,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                      ),
-                      child: const Text(
-                        "ADD",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
                     ElevatedButton(
                       onPressed: handleDelete,
                       style: ElevatedButton.styleFrom(
