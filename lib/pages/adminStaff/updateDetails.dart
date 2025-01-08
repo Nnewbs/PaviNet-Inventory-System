@@ -1,24 +1,39 @@
-//Add item to database
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 
-class ProductDetails extends StatefulWidget {
-  const ProductDetails({super.key});
+class UpdateDetails extends StatefulWidget {
+  final String id;
+  final String title;
+  final String price;
+  final String category;
+  final String imagePath;
+  final String owner;
+  final int quantity;
+
+  const UpdateDetails({
+    super.key,
+    required this.id,
+    required this.title,
+    required this.price,
+    required this.category,
+    required this.imagePath,
+    required this.owner,
+    required this.quantity,
+  });
 
   @override
-  State<ProductDetails> createState() => _ProductDetailsState();
+  State<UpdateDetails> createState() => _UpdateDetailsState();
 }
 
-class _ProductDetailsState extends State<ProductDetails> {
+class _UpdateDetailsState extends State<UpdateDetails> {
   // Controllers for form fields
   final TextEditingController idController = TextEditingController();
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController stockQuantityController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController imagePathController = TextEditingController();
-  final TextEditingController vendorController =
-      TextEditingController(); // New controller for vendor
+  final TextEditingController vendorController = TextEditingController();
 
   // Dropdown options for Category Type
   final List<String> typeOptions = ['Food', 'Drinks', 'Snacks'];
@@ -27,6 +42,19 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   // Form key for validation
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the controllers with the passed item data
+    idController.text = widget.id;
+    productNameController.text = widget.title;
+    priceController.text = widget.price;
+    stockQuantityController.text = widget.quantity.toString();
+    imagePathController.text = widget.imagePath;
+    vendorController.text = widget.owner;
+    selectedType = widget.category;
+  }
 
   // Success Prompt
   void showSuccessPrompt(String action) {
@@ -38,41 +66,53 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
   }
 
-  // Add button action
-  void handleAdd() async {
+  // Update button action
+  void handleUpdate() async {
     if (_formKey.currentState!.validate()) {
       try {
-        // Save product details to Firestore
-        await FirebaseFirestore.instance.collection("items").add({
-          "id": idController.text.trim(),
+        // Update product details in Firestore
+        await FirebaseFirestore.instance
+            .collection("items")
+            .doc(widget.id)
+            .update({
           "category": selectedType,
           "imagePath": imagePathController.text.trim(),
-          "owner": vendorController.text.trim(), // Save the vendor input
+          "owner": vendorController.text.trim(),
           "price": double.parse(priceController.text.trim()),
           "quantity": int.parse(stockQuantityController.text.trim()),
           "title": productNameController.text.trim(),
         });
 
-        showSuccessPrompt("added");
-
-        // Clear fields after success
-        idController.clear();
-        productNameController.clear();
-        stockQuantityController.clear();
-        priceController.clear();
-        imagePathController.clear();
-        vendorController.clear(); // Clear the vendor field
-        setState(() {
-          selectedType = null;
-        });
+        showSuccessPrompt("updated");
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to add product: $e'),
+            content: Text('Failed to update product: $e'),
             backgroundColor: Colors.red,
           ),
         );
       }
+    }
+  }
+
+  // Delete button action
+  void handleDelete() async {
+    try {
+      // Delete product from Firestore
+      await FirebaseFirestore.instance
+          .collection("items")
+          .doc(widget.id)
+          .delete();
+
+      showSuccessPrompt("deleted");
+      Navigator.pop(context); // Navigate back after successful deletion
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete product: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -83,7 +123,8 @@ class _ProductDetailsState extends State<ProductDetails> {
       home: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Product Details', style: CustomeTextStyle.txtWhiteBold),
+          title: Text('Update Product Details',
+              style: CustomeTextStyle.txtWhiteBold),
           backgroundColor: Colors.black,
         ),
         body: SingleChildScrollView(
@@ -118,15 +159,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     border: OutlineInputBorder(),
                     hintText: 'Enter ID',
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter ID';
-                    }
-                    if (int.tryParse(value) == null || int.parse(value) <= 0) {
-                      return 'Please enter a valid ID number';
-                    }
-                    return null;
-                  },
+                  readOnly: true,
                 ),
                 const SizedBox(height: 15),
                 // Product Name Field
@@ -162,19 +195,18 @@ class _ProductDetailsState extends State<ProductDetails> {
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'TYPE',
+                    hintText: 'Select category',
                   ),
                   validator: (value) {
-                    if (value == null) return 'Please select a type';
+                    if (value == null) return 'Please select a category';
                     return null;
                   },
                 ),
                 const SizedBox(height: 15),
-                // Vendor Field (Replaced dropdown with TextFormField)
+                // Vendor Field
                 const Text("Vendor :"),
                 TextFormField(
-                  controller:
-                      vendorController, // Using the new controller for vendor
+                  controller: vendorController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'Enter vendor name',
@@ -228,20 +260,35 @@ class _ProductDetailsState extends State<ProductDetails> {
                   },
                 ),
                 const SizedBox(height: 25),
-                // Add Button
-                Center(
-                  child: ElevatedButton(
-                    onPressed: handleAdd,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
+                // Update and Delete Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: handleUpdate,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                      ),
+                      child: const Text(
+                        "UPDATE",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
-                    child: const Text(
-                      "ADD",
-                      style: TextStyle(color: Colors.white),
+                    ElevatedButton(
+                      onPressed: handleDelete,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                      ),
+                      child: const Text(
+                        "DELETE",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
