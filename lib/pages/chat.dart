@@ -45,6 +45,7 @@ class _ChatState extends State<Chat> {
   void _setupChatsListener() {
     FirebaseFirestore.instance
         .collection('messages')
+        .orderBy("datetime", descending: true)
         .snapshots()
         .listen((snapshot) {
       setState(() {
@@ -182,23 +183,24 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext content) {
     return Scaffold(
-        backgroundColor: Colors.black,
-        body: SingleChildScrollView(
-          child: Padding(
+      backgroundColor: Colors.black,
+      body: Column(
+        children: <Widget>[
+          Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: Column(
-              children: <Widget>[
-                // message container
+              children: [
+                // message text box container
                 Container(
-                  margin: EdgeInsets.fromLTRB(30, 0, 30, 40),
+                  margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
                   child: Form(
                       key: _formKey,
                       child: Column(
                         children: [
                           Container(
                             margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                            padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
-                            height: 150,
+                            padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            height: 70,
                             decoration: BoxDecoration(
                                 color: Colors.grey,
                                 border:
@@ -231,15 +233,41 @@ class _ChatState extends State<Chat> {
                                         'SEND',
                                         style: CustomeTextStyle.txtWhiteBold,
                                       )),
-                          )
+                          ),
+                          SizedBox(height: 16),
                         ],
                       )),
                 ),
-                // chat list here
               ],
             ),
           ),
-        ));
+          Expanded(
+              child: ListView.builder(
+                  itemCount: _allChats.length,
+                  itemBuilder: (context, index) {
+                    final chat = _allChats[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 0,
+                        vertical: 1,
+                      ),
+                      color: Colors.grey.shade200,
+                      child: ListTile(
+                        title: Text(
+                          chat.user,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(chat.message),
+                        trailing: Text(
+                            chat.datetime.toLocal().toString().split('.')[0]),
+                      ),
+                    );
+                  }))
+        ],
+      ),
+      // ),
+      // )
+    );
   }
 }
 
