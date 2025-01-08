@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SupplierOrderStatus extends StatefulWidget {
-  const SupplierOrderStatus({Key? key}) : super(key: key);
+  const SupplierOrderStatus({super.key});
 
   @override
   State<SupplierOrderStatus> createState() => _SupplierOrderStatusState();
 }
 
 class _SupplierOrderStatusState extends State<SupplierOrderStatus> {
-  final List<OrderItem> _allOrders = [];
   final TextEditingController _searchController = TextEditingController();
   String _selectedFilter = 'All';
   final List<String> _statusFilters = [
@@ -20,38 +19,9 @@ class _SupplierOrderStatusState extends State<SupplierOrderStatus> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _fetchOrders();
-    _searchController.addListener(_filterOrders);
-  }
-
-  void _fetchOrders() {
-    FirebaseFirestore.instance
-        .collection('supplierOrders')
-        .snapshots()
-        .listen((snapshot) {
-      setState(() {
-        _allOrders.clear();
-        for (var doc in snapshot.docs) {
-          final data = doc.data();
-          _allOrders.add(OrderItem(
-            id: doc.id,
-            supplier: data['supplierName'] ?? 'Unknown',
-            itemName: data['itemName'] ?? 'Unknown',
-            quantity:
-                '${data['requestedQuantity'] ?? 0} ${data['unitType'] ?? ''}',
-            status: data['status'] ?? 'Pending',
-          ));
-        }
-      });
-    });
-  }
-
-  void _filterOrders() {
-    setState(() {
-      // Filtering happens in the ListView dynamically
-    });
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -76,6 +46,9 @@ class _SupplierOrderStatusState extends State<SupplierOrderStatus> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
+                    onChanged: (_) {
+                      setState(() {}); // Triggers filtering
+                    },
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -99,38 +72,71 @@ class _SupplierOrderStatusState extends State<SupplierOrderStatus> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _allOrders.length,
-              itemBuilder: (context, index) {
-                final order = _allOrders[index];
-                if (_selectedFilter != 'All' &&
-                    order.status != _selectedFilter) {
-                  return const SizedBox.shrink();
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('supplierOrders')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
                 }
-                if (_searchController.text.isNotEmpty &&
-                    !order.itemName.toLowerCase().contains(
-                          _searchController.text.toLowerCase(),
-                        ) &&
-                    !order.supplier.toLowerCase().contains(
-                          _searchController.text.toLowerCase(),
-                        )) {
-                  return const SizedBox.shrink();
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
                 }
-                return Card(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: ListTile(
-                    leading: _buildStatusIndicator(order.status),
-                    title: Text(order.itemName),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Supplier: ${order.supplier}'),
-                        Text('Quantity: ${order.quantity}'),
-                        Text('Status: ${order.status}'),
-                      ],
-                    ),
-                  ),
+
+                final orders = snapshot.data!.docs.map((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  return OrderItem(
+                    id: doc.id,
+                    supplier: data['supplierName'] ?? 'Unknown',
+                    itemName: data['itemName'] ?? 'Unknown',
+                    quantity:
+                        '${data['requestedQuantity'] ?? 0} ${data['unitType'] ?? ''}',
+                    status: data['status'] ?? 'Pending',
+                  );
+                }).toList();
+
+                // Apply filtering
+                final filteredOrders = orders.where((order) {
+                  final matchesStatus = _selectedFilter == 'All' ||
+                      order.status == _selectedFilter;
+                  final matchesSearch = _searchController.text.isEmpty ||
+                      order.itemName.toLowerCase().contains(
+                            _searchController.text.toLowerCase(),
+                          ) ||
+                      order.supplier.toLowerCase().contains(
+                            _searchController.text.toLowerCase(),
+                          );
+                  return matchesStatus && matchesSearch;
+                }).toList();
+
+                if (filteredOrders.isEmpty) {
+                  return const Center(child: Text('No orders found.'));
+                }
+
+                return ListView.builder(
+                  itemCount: filteredOrders.length,
+                  itemBuilder: (context, index) {
+                    final order = filteredOrders[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 16,
+                      ),
+                      child: ListTile(
+                        leading: _buildStatusIndicator(order.status),
+                        title: Text(order.itemName),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Supplier: ${order.supplier}'),
+                            Text('Quantity: ${order.quantity}'),
+                            Text('Status: ${order.status}'),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             ),

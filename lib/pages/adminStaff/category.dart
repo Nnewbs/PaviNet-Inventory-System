@@ -33,6 +33,7 @@ class _CategoryState extends State<Category> {
         "owner": data["owner"] ?? "",
         "price": data["price"] ?? "",
         "category": data["category"] ?? "",
+        "quantity": data["quantity"] ?? 0, 
         "imagePath": data["imagePath"] ?? "default_image.png", // Default if no image
       };
     }).toList();
@@ -152,6 +153,7 @@ class _CategoryState extends State<Category> {
                       final item = filteredItems[index];
                       // Assuming each item has an 'imagePath' field that stores the image filename
                       final imagePath = item["imagePath"] ?? "default_image.png"; // Default image if not found
+                      final quantity = item["quantity"] ?? 0; // Default quantity
 
                       return Card(
                         elevation: 4,
@@ -203,17 +205,38 @@ class _CategoryState extends State<Category> {
                                     item["owner"] ?? "No Owner",  // Default value if owner is null
                                     style: const TextStyle(
                                       fontSize: 12,
-                                      color: Colors.grey,
+                                      color: Color.fromARGB(255, 68, 22, 22),
                                     ),
                                   ),
                                   const SizedBox(height: 6),
-                                  Text(
-                                    item["price"] ?? "No Price",  // Default value if price is null
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: Colors.orange,
-                                    ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        item["price"] ?? "No Price",  // Default value if price is null
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          color: Colors.orange,
+                                        ),
+                                      ),
+                                      // Display the stock number inside a small box
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius: BorderRadius.circular(12.0),
+                                        ),
+                                        child: Text(
+                                          '$quantity',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
