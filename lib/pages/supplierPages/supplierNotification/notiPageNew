@@ -1,0 +1,92 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:pavinet/customStyles/customStyles.dart';
+
+class SupplierNotiPage extends StatefulWidget {
+  const SupplierNotiPage({super.key});
+
+  @override
+  State<SupplierNotiPage> createState() => _SupplierNotiPageState();
+}
+
+class _SupplierNotiPageState extends State<SupplierNotiPage> {
+  // Stream to listen to updates from Firestore
+  Stream<QuerySnapshot> getNotifications() {
+    return FirebaseFirestore.instance.collection('items').snapshots();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            'Notification',
+            style: CustomeTextStyle.txtWhiteBold,
+          ),
+          backgroundColor: Colors.black,
+        ),
+        backgroundColor: const Color.fromRGBO(0, 0, 0, 1),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: getNotifications(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return const Center(child: Text('No notifications available.'));
+            }
+
+            final notifications = snapshot.data!.docs;
+
+            return ListView.builder(
+              itemCount: notifications.length,
+              itemBuilder: (context, index) {
+                final notification = notifications[index];
+                final String title = notification['title'];
+                final String owner = notification['owner'];
+                final int quantity = notification['quantity'];
+                final String message = 'Restock needed urgently.'; // Update this based on your logic
+                final bool isRead = notification['isRead'] ?? false;
+
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  color: isRead ? Colors.grey[300] : Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ListTile(
+                    title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Owner: $owner'),
+                        Text('Quantity: $quantity'),
+                        Text(message),
+                      ],
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.mark_email_read, color: Colors.green),
+                      onPressed: () {
+                        setState(() {
+                          FirebaseFirestore.instance.collection('items').doc(notification.id).update({'isRead': true});
+                        });
+                      },
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
