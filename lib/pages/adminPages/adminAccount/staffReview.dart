@@ -52,7 +52,7 @@ class _StaffReviewState extends State<StaffReview> {
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore
           .collection('users')
-          .where('role', isEqualTo: 'User')
+          .where('role', isEqualTo: 'Staff')
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
