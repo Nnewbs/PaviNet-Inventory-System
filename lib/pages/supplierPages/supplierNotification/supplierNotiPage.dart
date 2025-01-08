@@ -12,20 +12,19 @@ class _SupplierNotiPageState extends State<SupplierNotiPage> {
   // Sample notification data
   List<Map<String, dynamic>> notifications = [
     {
-      'image': 'Cendol.jpg', 
+      // 'image': 'Cendol.jpg',
       'name': 'Item 1',
       'quantity': 5,
       'message': 'Restock needed urgently.',
       'isRead': false
     },
     {
-      'image': 'wantan.jpg',
+      // 'image': 'wantan.jpg',
       'name': 'Item 2',
       'quantity': 10,
       'message': 'Low stock alert.',
       'isRead': false
     },
-    
   ];
 
   @override
@@ -53,8 +52,9 @@ class _SupplierNotiPageState extends State<SupplierNotiPage> {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: ListTile(
-                leading: Image.asset(notification['image'], width: 50, height: 50),
-                title: Text(notification['name'], style: TextStyle(fontWeight: FontWeight.bold)),
+                // leading: Image.asset(notification['image'], width: 50, height: 50),
+                title: Text(notification['name'],
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -78,5 +78,3 @@ class _SupplierNotiPageState extends State<SupplierNotiPage> {
     );
   }
 }
-
-              
