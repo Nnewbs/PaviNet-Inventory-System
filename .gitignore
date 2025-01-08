@@ -43,3 +43,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Ignore Flutter & Android build files
+.idea/
+.vscode/
+build/
+local.properties
+*.bin
+*.lock

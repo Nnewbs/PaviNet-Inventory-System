@@ -9,161 +9,72 @@ class SupplierNotiPage extends StatefulWidget {
 }
 
 class _SupplierNotiPageState extends State<SupplierNotiPage> {
+  // Sample notification data
+  List<Map<String, dynamic>> notifications = [
+    {
+      // 'image': 'Cendol.jpg',
+      'name': 'Item 1',
+      'quantity': 5,
+      'message': 'Restock needed urgently.',
+      'isRead': false
+    },
+    {
+      // 'image': 'wantan.jpg',
+      'name': 'Item 2',
+      'quantity': 10,
+      'message': 'Low stock alert.',
+      'isRead': false
+    },
+  ];
+
   @override
-  Widget build(BuildContext content) {
+  Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: Text(
-              'Notification',
-              style: CustomeTextStyle.txtWhiteBold,
-            ),
-            backgroundColor: Colors.black,
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            'Notification',
+            style: CustomeTextStyle.txtWhiteBold,
           ),
-          backgroundColor: const Color.fromRGBO(0, 0, 0, 1),
-          body: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: <Widget>[
-                // notification container
-                Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                    decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Column(children: [
-                      // static data sample
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: DataTable(
-                                dataRowMaxHeight: double.infinity,
-                                columns: [
-                                  DataColumn(label: Text('Item')),
-                                  DataColumn(label: Text('Quantity')),
-                                  DataColumn(label: Text('Message')),
-                                  // DataColumn(label: Text('Mark as Read'))
-                                ],
-                                rows: [
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('21/10/24')),
-                                    DataCell(Text('3')),
-                                    DataCell(ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100), //SET max width
-                                        child: Text(
-                                          'very long text blah blah blah blah blah blah',
-                                        ))),
-                                  ]),
-                                ])),
-                      )
-                    ]))
-              ],
-            ),
-          ),
-        ));
+          backgroundColor: Colors.black,
+        ),
+        backgroundColor: const Color.fromRGBO(0, 0, 0, 1),
+        body: ListView.builder(
+          itemCount: notifications.length,
+          itemBuilder: (context, index) {
+            final notification = notifications[index];
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              color: notification['isRead'] ? Colors.grey[300] : Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: ListTile(
+                // leading: Image.asset(notification['image'], width: 50, height: 50),
+                title: Text(notification['name'],
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Quantity: ${notification['quantity']}'),
+                    Text(notification['message']),
+                  ],
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.mark_email_read, color: Colors.green),
+                  onPressed: () {
+                    setState(() {
+                      notifications[index]['isRead'] = true;
+                    });
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

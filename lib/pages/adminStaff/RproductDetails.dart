@@ -2,7 +2,6 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 
-//Add Item
 class ProductDetails extends StatefulWidget {
   const ProductDetails({super.key});
 
@@ -49,6 +48,26 @@ class _ProductDetailsState extends State<ProductDetails> {
         selectedVendor = null;
       });
     }
+  }
+
+  // Update button action
+  void handleUpdate() {
+    if (_formKey.currentState!.validate()) {
+      showSuccessPrompt("updated");
+    }
+  }
+
+  // Delete button action
+  void handleDelete() {
+    showSuccessPrompt("deleted");
+    // Clear fields after delete
+    productNameController.clear();
+    descriptionController.clear();
+    stockQuantityController.clear();
+    setState(() {
+      selectedType = null;
+      selectedVendor = null;
+    });
   }
 
   @override
@@ -201,6 +220,30 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                       child: const Text(
                         "ADD",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: handleDelete,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                      ),
+                      child: const Text(
+                        "DELETE",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: handleUpdate,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                      ),
+                      child: const Text(
+                        "UPDATE",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
