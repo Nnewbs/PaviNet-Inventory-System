@@ -22,7 +22,7 @@ class _CategoryState extends State<Category> {
   // Search input
   String searchQuery = "";
 
-    // Fetch data from Firestore
+  // Fetch data from Firestore
   Future<List<Map<String, dynamic>>> fetchItems() async {
     final snapshot = await FirebaseFirestore.instance.collection('items').get();
     return snapshot.docs.map((doc) {
@@ -33,12 +33,12 @@ class _CategoryState extends State<Category> {
         "owner": data["owner"] ?? "",
         "price": data["price"] ?? "",
         "category": data["category"] ?? "",
-        "quantity": data["quantity"] ?? 0, 
-        "imagePath": data["imagePath"] ?? "default_image.png", // Default if no image
+        "quantity": data["quantity"] ?? 0,
+        "imagePath":
+            data["imagePath"] ?? "default_image.png", // Default if no image
       };
     }).toList();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -128,16 +128,21 @@ class _CategoryState extends State<Category> {
                     );
                   }
                   final filteredItems = snapshot.data!.where((item) {
-                    final matchesCategory = selectedCategory == "All Category" ||
-                        item["category"] == selectedCategory;
+                    final matchesCategory =
+                        selectedCategory == "All Category" ||
+                            item["category"] == selectedCategory;
 
                     final matchesSearch = searchQuery.isEmpty ||
-                        item["title"]!.toLowerCase().contains(searchQuery.toLowerCase()) ||
-                        item["owner"]!.toLowerCase().contains(searchQuery.toLowerCase());
+                        item["title"]!
+                            .toLowerCase()
+                            .contains(searchQuery.toLowerCase()) ||
+                        item["owner"]!
+                            .toLowerCase()
+                            .contains(searchQuery.toLowerCase());
 
                     return matchesCategory && matchesSearch;
                   }).toList();
-                  
+
                   return GridView.builder(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12.0, vertical: 8.0),
@@ -152,8 +157,10 @@ class _CategoryState extends State<Category> {
                     itemBuilder: (context, index) {
                       final item = filteredItems[index];
                       // Assuming each item has an 'imagePath' field that stores the image filename
-                      final imagePath = item["imagePath"] ?? "default_image.png"; // Default image if not found
-                      final quantity = item["quantity"] ?? 0; // Default quantity
+                      final imagePath = item["imagePath"] ??
+                          "default_image.png"; // Default image if not found
+                      final quantity =
+                          item["quantity"] ?? 0; // Default quantity
 
                       return Card(
                         elevation: 4,
@@ -167,7 +174,6 @@ class _CategoryState extends State<Category> {
                             Container(
                               height: 130,
                               decoration: BoxDecoration(
-         
                                 borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(12.0),
                                   topRight: Radius.circular(12.0),
@@ -189,12 +195,14 @@ class _CategoryState extends State<Category> {
                             ),
                             // Food Details
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 6.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    item["title"] ?? "No Title",  // Default value if title is null
+                                    item["title"] ??
+                                        "No Title", // Default value if title is null
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
@@ -202,7 +210,8 @@ class _CategoryState extends State<Category> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    item["owner"] ?? "No Owner",  // Default value if owner is null
+                                    item["owner"] ??
+                                        "No Owner", // Default value if owner is null
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Color.fromARGB(255, 68, 22, 22),
@@ -210,10 +219,12 @@ class _CategoryState extends State<Category> {
                                   ),
                                   const SizedBox(height: 6),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        item["price"] ?? "No Price",  // Default value if price is null
+                                        'RM${item["price"].toStringAsFixed(2)}' ??
+                                            "No Price", // Default value if price is null
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,
@@ -222,10 +233,12 @@ class _CategoryState extends State<Category> {
                                       ),
                                       // Display the stock number inside a small box
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0, vertical: 4.0),
                                         decoration: BoxDecoration(
                                           color: Colors.grey[300],
-                                          borderRadius: BorderRadius.circular(12.0),
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
                                         ),
                                         child: Text(
                                           '$quantity',

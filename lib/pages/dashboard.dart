@@ -39,7 +39,7 @@ class _DashboardState extends State<Dashboard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(data['title'], style: TextStyle(fontWeight: FontWeight.bold)),
-            Text(data['price'],
+            Text('RM${data['price'].toStringAsFixed(2)}',
                 style:
                     TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
           ],
