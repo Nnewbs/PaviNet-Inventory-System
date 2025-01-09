@@ -44,7 +44,7 @@ class _DashboardState extends State<Dashboard> {
                     TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
           ],
         )),
-        DataCell(Text('${data['quantity']} sold')),
+        DataCell(Text('')),
       ]);
     }).toList();
   }

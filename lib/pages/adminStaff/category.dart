@@ -168,10 +168,10 @@ class _CategoryState extends State<Category> {
                         onTap: () {
                           debugPrint('redirect to update/delete page');
                           // push to test
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Chat()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => const Chat()));
                         },
                         child: Card(
                           elevation: 4,
