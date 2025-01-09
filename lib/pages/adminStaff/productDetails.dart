@@ -21,7 +21,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       TextEditingController(); // New controller for vendor
 
   // Dropdown options for Category Type
-  final List<String> typeOptions = ['Food', 'Drinks', 'Snacks'];
+  final List<String> typeOptions = ['Bakery', 'Prepare', 'Fresh'];
 
   String? selectedType;
 

@@ -36,7 +36,7 @@ class _UpdateDetailsState extends State<UpdateDetails> {
   final TextEditingController vendorController = TextEditingController();
 
   // Dropdown options for Category Type
-  final List<String> typeOptions = ['Food', 'Drinks', 'Snacks'];
+  final List<String> typeOptions = ['Bakery', 'Prepare', 'Fresh'];
 
   String? selectedType;
 
