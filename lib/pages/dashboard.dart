@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -9,27 +10,70 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  late Future<List<ChartData>> _chartDataFuture;
+  late Future<List<DataRow>> _bestSellersFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _chartDataFuture = _fetchChartData();
+    _bestSellersFuture = _fetchBestSellers();
+  }
+
+  Future<List<ChartData>> _fetchChartData() async {
+    final querySnapshot =
+        await FirebaseFirestore.instance.collection('items').get();
+    return querySnapshot.docs.map((doc) {
+      final data = doc.data();
+      return ChartData(data['title'], data['quantity']);
+    }).toList();
+  }
+
+  Future<List<DataRow>> _fetchBestSellers() async {
+    final querySnapshot =
+        await FirebaseFirestore.instance.collection('items').get();
+    return querySnapshot.docs.map((doc) {
+      final data = doc.data();
+      return DataRow(cells: [
+        DataCell(Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(data['title'], style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(data['price'],
+                style:
+                    TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+          ],
+        )),
+        DataCell(Text('${data['quantity']} sold')),
+      ]);
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext content) {
-    // static data sample
-    final List<ChartData> chartData = [
-      ChartData('Choco Moist', 19),
-      ChartData('Choco Jar', 15),
-      ChartData('Cendol', 18),
-      ChartData('Tart', 15),
-    ];
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                // stock level container
-                Container(
+        padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              // Stock level container
+              FutureBuilder<List<ChartData>>(
+                future: _chartDataFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                  final chartData = snapshot.data!;
+                  return Container(
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -45,187 +89,66 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ),
                         SfCartesianChart(
-                            primaryXAxis: CategoryAxis(),
-                            series: <CartesianSeries<ChartData, String>>[
-                              // Renders column chart
-                              ColumnSeries<ChartData, String>(
-                                dataSource: chartData,
-                                xValueMapper: (ChartData data, int index) =>
-                                    data.x,
-                                yValueMapper: (ChartData data, int index) =>
-                                    data.y,
-                              )
-                            ]),
+                          primaryXAxis: CategoryAxis(),
+                          series: <CartesianSeries<ChartData, String>>[
+                            ColumnSeries<ChartData, String>(
+                              dataSource: chartData,
+                              xValueMapper: (ChartData data, _) => data.x,
+                              yValueMapper: (ChartData data, _) => data.y,
+                            )
+                          ],
+                        ),
                       ],
-                    )),
-                SizedBox(height: 10),
-                // best seller container
-                Container(
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 10),
+              // Best sellers container
+              FutureBuilder<List<DataRow>>(
+                future: _bestSellersFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                  final bestSellers = snapshot.data!;
+                  return Container(
                     margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
                     padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
                     decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: BorderRadius.circular(20)),
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         DataTable(
-                            dividerThickness: 0.00000000001,
-                            dataRowMaxHeight: double.infinity,
-                            columns: [
-                              DataColumn(
-                                label: Text(
-                                  'Best Sellers',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                          dividerThickness: 0.00000000001,
+                          dataRowMaxHeight: double.infinity,
+                          columns: [
+                            DataColumn(
+                              label: Text(
+                                'Best Sellers',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
-                              DataColumn(label: Text('')),
-                            ],
-                            // sample
-                            rows: [
-                              DataRow(cells: [
-                                DataCell(Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Choco Moist',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text('RM8.00',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                )),
-                                DataCell(Text('9 sold')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Tart',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text('RM5.00',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                )),
-                                DataCell(Text('5 sold')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Choco Jar',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text('RM12.00',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                )),
-                                DataCell(Text('6 sold')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Choco Moist',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text('RM8.00',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                )),
-                                DataCell(Text('9 sold')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Tart',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text('RM5.00',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                )),
-                                DataCell(Text('5 sold')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Choco Jar',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text('RM12.00',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                )),
-                                DataCell(Text('6 sold')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Choco Moist',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text('RM8.00',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                )),
-                                DataCell(Text('9 sold')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Tart',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text('RM5.00',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                )),
-                                DataCell(Text('5 sold')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Choco Jar',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text('RM12.00',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                )),
-                                DataCell(Text('6 sold')),
-                              ]),
-                            ])
+                            ),
+                            DataColumn(label: Text('')),
+                          ],
+                          rows: bestSellers,
+                        ),
                       ],
-                    ))
-              ],
-            ),
-          )),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
