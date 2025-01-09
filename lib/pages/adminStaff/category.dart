@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pavinet/customStyles/customStyles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pavinet/pages/adminStaff/updateDetails.dart';
+import 'package:pavinet/pages/chat.dart';
 
 class Category extends StatefulWidget {
   const Category({super.key});
@@ -162,99 +164,109 @@ class _CategoryState extends State<Category> {
                       final quantity =
                           item["quantity"] ?? 0; // Default quantity
 
-                      return Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Display Image from assets
-                            Container(
-                              height: 130,
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(12.0),
-                                  topRight: Radius.circular(12.0),
+                      return InkWell(
+                        onTap: () {
+                          debugPrint('redirect to update/delete page');
+                          // push to test
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Chat()));
+                        },
+                        child: Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Display Image from assets
+                              Container(
+                                height: 130,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(12.0),
+                                    topRight: Radius.circular(12.0),
+                                  ),
+                                ),
+                                child: Image.asset(
+                                  'assets/images/$imagePath', // Dynamic path
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Center(
+                                      child: Icon(
+                                        Icons.broken_image,
+                                        size: 40,
+                                        color: Colors.grey,
+                                      ), // Fallback icon
+                                    );
+                                  },
                                 ),
                               ),
-                              child: Image.asset(
-                                'assets/images/$imagePath', // Dynamic path
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Center(
-                                    child: Icon(
-                                      Icons.broken_image,
-                                      size: 40,
-                                      color: Colors.grey,
-                                    ), // Fallback icon
-                                  );
-                                },
-                              ),
-                            ),
-                            // Food Details
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 6.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item["title"] ??
-                                        "No Title", // Default value if title is null
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    item["owner"] ??
-                                        "No Owner", // Default value if owner is null
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Color.fromARGB(255, 68, 22, 22),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'RM${item["price"].toStringAsFixed(2)}' ??
-                                            "No Price", // Default value if price is null
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                          color: Colors.orange,
-                                        ),
+                              // Food Details
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 6.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item["title"] ??
+                                          "No Title", // Default value if title is null
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
                                       ),
-                                      // Display the stock number inside a small box
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0, vertical: 4.0),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[300],
-                                          borderRadius:
-                                              BorderRadius.circular(12.0),
-                                        ),
-                                        child: Text(
-                                          '$quantity',
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      item["owner"] ??
+                                          "No Owner", // Default value if owner is null
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Color.fromARGB(255, 68, 22, 22),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'RM${item["price"].toStringAsFixed(2)}' ??
+                                              "No Price", // Default value if price is null
                                           style: const TextStyle(
-                                            fontSize: 14,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black,
+                                            fontSize: 14,
+                                            color: Colors.orange,
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                        // Display the stock number inside a small box
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8.0, vertical: 4.0),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[300],
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                          ),
+                                          child: Text(
+                                            '$quantity',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },
